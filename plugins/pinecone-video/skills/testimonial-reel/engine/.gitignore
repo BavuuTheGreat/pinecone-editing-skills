@@ -1,0 +1,19 @@
+node_modules
+build/
+__pycache__/
+*.log
+# real jobs hold student names, captions and audio: keep them on the editing Mac, not in git
+batches/*
+!batches/_*.json
+!batches/captions/
+batches/captions/*
+!batches/captions/_example/
+!batches/pinequest/
+batches/pinequest/*
+!batches/pinequest/_*.json
+.venv-align/
+# brand pack: Pinecone-owned / licensed files, not public. Get them from the Editing manager (see scripts/setup.py)
+assets/GIP-Regular.woff2
+assets/end_card_9x16.mp4
+assets/pinecone_mark.svg
+assets/pinequest/pq_s5_end_card.mp4

@@ -1,0 +1,84 @@
+{
+ "_comment": "Example batch (anonymized). Real batches are made with new_batch.py and are git-ignored. Piece times are seconds in the raw file; or use word_start/word_end/lo/hi to snap to the quietest point.",
+ "format": "testimonial",
+ "rulebook": "v1",
+ "out_clean": "~/Downloads/ai-footages-edited-version",
+ "out_edited": "~/Desktop/ai captioned videos",
+ "kicker": "Pinecone Bootcamp · сурагч",
+ "cards": {
+  "q1": {
+   "text": "Яагаад Pinecone-д сурахаар болсон бэ?",
+   "seconds": 2.7,
+   "sfx": "type_1.wav"
+  },
+  "q2": {
+   "text": "Одоо хамгийн сорилттой зүйл юу байна вэ?",
+   "seconds": 2.9,
+   "sfx": "type_2.wav"
+  },
+  "q3": {
+   "text": "Одоо хамгийн гоё зүйл юу байна вэ?",
+   "seconds": 2.6,
+   "sfx": "type_3.wav"
+  },
+  "q4": {
+   "text": "Сурах гэж буй хүмүүст ямар зөвлөгөө өгөх вэ?",
+   "seconds": 3.0,
+   "sfx": "type_4.wav"
+  }
+ },
+ "end_card": "../assets/end_card_9x16.mp4",
+ "music": "../assets/music/Funkorama.mp3",
+ "speech_over_bed_db": 16.5,
+ "caption_style": {
+  "size": 57.5,
+  "gap": 35,
+  "baseline": 1606,
+  "cx": 535
+ },
+ "concurrency": 3,
+ "students": [
+  {
+   "key": "A",
+   "num": 1,
+   "name": "Бат-Эрдэнэ",
+   "source": "~/Downloads/shoot/student 1.mp4",
+   "pieces": [
+    {
+     "id": "p01",
+     "answer": "intro",
+     "start": 4.8,
+     "end": 10.6
+    },
+    {
+     "id": "p02",
+     "answer": "q1",
+     "word_start": 16.98,
+     "word_end": 40.28,
+     "lo": 15.7,
+     "hi": 41.1
+    },
+    {
+     "id": "p03",
+     "answer": "q2",
+     "start": 112.0,
+     "end": 117.6
+    },
+    {
+     "id": "p04",
+     "answer": "q3",
+     "start": 117.95,
+     "end": 140.45
+    },
+    {
+     "id": "p05",
+     "answer": "q4",
+     "start": 147.3,
+     "end": 157.49
+    }
+   ],
+   "captions": "captions/_example/01.txt",
+   "title_scale": 0.8
+  }
+ ]
+}

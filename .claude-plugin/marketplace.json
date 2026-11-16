@@ -1,0 +1,32 @@
+{
+  "name": "pinecone-editing-skills",
+  "owner": {
+    "name": "Pinecone Academy Marketing"
+  },
+  "metadata": {
+    "description": "Pinecone Academy's editing station for Claude Code: raw footage in, finished Pinecone-style reels out (testimonial, PineQuest, podcast, motion and more), plus reel audits and motion graphics."
+  },
+  "plugins": [
+    {
+      "name": "pinecone-video",
+      "source": "./plugins/pinecone-video",
+      "description": "edit-reel (Editing station: pick a reel theme, get it edited in Pinecone's house style), testimonial-reel, reel-audit, ai-video-playbook, brand-motion, podcast-clipper and motion-studio skills tuned to Pinecone reel formats.",
+      "version": "0.5.0",
+      "category": "productivity",
+      "keywords": [
+        "video",
+        "reels",
+        "instagram",
+        "remotion",
+        "higgsfield",
+        "capcut",
+        "motion",
+        "testimonial",
+        "captions",
+        "editing",
+        "themes",
+        "pinequest"
+      ]
+    }
+  ]
+}

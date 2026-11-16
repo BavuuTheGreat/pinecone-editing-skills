@@ -1,0 +1,120 @@
+{
+ "_comment": "Copy to <job folder>/job.json. Paths are relative to the job file. Run: python3 -I pinequest.py <job>.json --plan, then without --plan. Hook: by default the headline is the hook quote itself (no caption lines for the hook piece). A result headline with one highlighted phrase is the fallback.",
+ "theme": "pinequest-testimonial",
+ "key": "XX",
+ "file_stem": "PineQuest_<Нэр>",
+ "out_dir": "~/Desktop/ai edited reels",
+ "person": {
+  "name": "<Нэр, confirmed>",
+  "team": "<Баг>",
+  "result": "<III байр / ялагч / оролцогч>",
+  "handle": "@<team handle>"
+ },
+ "source": "<raw interview.mp4>",
+ "pieces": [
+  {
+   "id": "t0",
+   "answer": "hook",
+   "start": 0,
+   "end": 0,
+   "_": "cold open: the most energetic 2-3 s line, reused later in its answer"
+  },
+  {
+   "id": "a1",
+   "answer": "q1",
+   "word_start": 0,
+   "word_end": 0,
+   "lo": 0,
+   "hi": 0
+  }
+ ],
+ "cards": {
+  "q2": "PineQuest тэмцээний үеэр хэцүү зүйл байсан уу?",
+  "q3": "Хамгийн хөгжилтэй дурсамж",
+  "q4": "5 жилийн дараа өөрийгөө хаана харж байна?",
+  "q5": "Software Engineer чиглэлээр суралцах хүсэлтэй хүмүүст зөвлөгөө"
+ },
+ "captions": [
+  [
+   0.0,
+   0.0,
+   "source-time from|to|text, 2-4 words. Times may be rough: run `pinequest.py <job> --align` after the text is final and it sets from/to from the audio",
+   "piece id is optional; omit hook lines when the headline is the quote"
+  ]
+ ],
+ "hook": {
+  "piece": "t0",
+  "lines": [
+   {
+    "text": "Айвал бүү хий,"
+   },
+   {
+    "text": "хийвэл бүү ай."
+   }
+  ],
+  "top": 150,
+  "_fallback_result_headline": [
+   {
+    "text": "PineQuest S5-д"
+   },
+   {
+    "text": "3-р байр эзэлсэн",
+    "highlight": "3-р байр"
+   },
+   {
+    "text": "<БАГ> баг"
+   }
+  ]
+ },
+ "zoom": {
+  "a3": [
+   {
+    "t": 2.7,
+    "scale": 1.1,
+    "y": 30
+   }
+  ]
+ },
+ "grabs": [
+  {
+   "out": "device.png",
+   "from": "media/team_pitch.mp4",
+   "t": 17.75,
+   "crop": "1080:608:0:1290"
+  }
+ ],
+ "files": [
+  "media/team_photo.png"
+ ],
+ "inserts": [
+  {
+   "src": "team_photo.png",
+   "media": "image",
+   "layout": "framed",
+   "at": [
+    "a1",
+    0
+   ],
+   "until": [
+    "a1",
+    0
+   ]
+  }
+ ],
+ "card_typing": false,
+ "card_sfx": false,
+ "_card": "card_typing / card_sfx default false (review 2026-11-16): question card appears whole and silent. true = typed letter by letter / key sounds + one transition sound per card. Omit both for the default.",
+ "hook_motion": "calm",
+ "_hook_motion": "calm (default, review 2026-11-16): no impact zoom, fixed framing (first key of zoom.<hook piece>, no ramp), headline fades in, hard cut into answer 1. punchy = the old impact + zoom ramp + word pop + whip.",
+ "music": "generate",
+ "speech_over_bed_db": 14.0,
+ "_speech_over_bed_db": "speech level over the music bed in dB; 14 is the reviewed level (11 was 'too loud', review 2026-11-16). Higher = quieter music.",
+ "music_style": {
+  "bpm": 128,
+  "seed": 5,
+  "key": 3
+ },
+ "_music_style": "optional: a second synthesized song so reels in a series don't all share one track. Omit for the original 122 BPM bed. bpm = tempo, key = transpose in semitones, seed = noise variation. Change the numbers per reel.",
+ "_caption_style": "optional, only when needed: {\"baseline\": 1530} moves captions below a logo/print on the clothes; {\"shadow\": \"drop-shadow(0 2px 3px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(0,0,0,0.75))\"} for white or light clothes under the caption line.",
+ "post_caption": "PineQuest S5-ийн <III байр / оролцогч>, <Баг> багийн гишүүн <Нэр>-ийн сэтгэгдэл ⭐️"
+}

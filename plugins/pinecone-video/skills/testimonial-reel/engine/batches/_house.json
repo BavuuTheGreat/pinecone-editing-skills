@@ -1,0 +1,41 @@
+{
+ "_comment": "House settings for testimonial batches (Rulebook v1). new_batch.py copies these into every new manifest. Change only with the Editing manager.",
+ "format": "testimonial",
+ "rulebook": "v1",
+ "out_clean": "~/Downloads/ai-footages-edited-version",
+ "out_edited": "~/Desktop/ai captioned videos",
+ "kicker": "Pinecone Bootcamp · сурагч",
+ "cards": {
+  "q1": {
+   "text": "Яагаад Pinecone-д сурахаар болсон бэ?",
+   "seconds": 2.7,
+   "sfx": "type_1.wav"
+  },
+  "q2": {
+   "text": "Одоо хамгийн сорилттой зүйл юу байна вэ?",
+   "seconds": 2.9,
+   "sfx": "type_2.wav"
+  },
+  "q3": {
+   "text": "Одоо хамгийн гоё зүйл юу байна вэ?",
+   "seconds": 2.6,
+   "sfx": "type_3.wav"
+  },
+  "q4": {
+   "text": "Сурах гэж буй хүмүүст ямар зөвлөгөө өгөх вэ?",
+   "seconds": 3.0,
+   "sfx": "type_4.wav"
+  }
+ },
+ "end_card": "../assets/end_card_9x16.mp4",
+ "music": "../assets/music/Funkorama.mp3",
+ "speech_over_bed_db": 16.5,
+ "caption_style": {
+  "size": 57.5,
+  "gap": 35,
+  "baseline": 1606,
+  "cx": 535
+ },
+ "concurrency": 3,
+ "students": []
+}

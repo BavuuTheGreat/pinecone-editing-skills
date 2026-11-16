@@ -1,0 +1,110 @@
+<!doctype html>
+<!-- Starter film: a 6 s loop showing the patterns every film here uses.
+     One shape that never cuts, springs via track(), kinetic type, a counter,
+     last frame = first frame. Replace the SCENE section; keep the contract. -->
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;800&display=swap">
+<style>html,body{margin:0;background:#0E1220;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+import { clamp, progress, track, trackVec, spring, SNAPPY, HEAVY, UI } from "./lib/motion.js";
+
+// ---- Contract: size from the query string, film.duration, window.seek(t) ----
+const q = new URLSearchParams(location.search);
+const W = Number(q.get("w") ?? 1080), H = Number(q.get("h") ?? 1920);
+const cv = document.getElementById("c");
+cv.width = W; cv.height = H;
+const g = cv.getContext("2d");
+const u = Math.min(W, H) / 1080; // 1 design unit = 1px on a 1080-wide frame
+window.film = { duration: 6 };
+window.ready = document.fonts.load(`800 ${100 * u}px Inter`);
+
+// ---- Brand ----
+const C = { ink: "#0E1220", paper: "#F4F5F1", blue: "#2E55E0", soft: "#7C9BFF" };
+const FONT = "Inter, Arial, sans-serif";
+
+// ---- SCENE ----
+// Beat grid at 120 BPM: a change lands every 0.5 s.
+const shapeW = [[0, 260], [1.5, 860], [3.5, 860], [5.0, 260]];
+const shapeH = [[0, 120], [1.5, 520], [3.5, 520], [5.0, 120]];
+const radius = [[0, 60], [1.5, 48], [3.5, 48], [5.0, 60]];
+const cursor = [[0, [700, 1300]], [0.8, [560, 1000]], [3.0, [760, 1180]], [5.2, [700, 1300]]];
+
+function roundRect(x, y, w, h, r) {
+  g.beginPath();
+  g.roundRect(x, y, w, h, Math.min(r, h / 2, w / 2));
+}
+
+function text(str, x, y, size, weight, color, alpha = 1) {
+  g.globalAlpha = clamp(alpha);
+  g.fillStyle = color;
+  g.font = `${weight} ${size * u}px ${FONT}`;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText(str, x, y);
+  g.globalAlpha = 1;
+}
+
+function paint(t) {
+  g.fillStyle = C.ink;
+  g.fillRect(0, 0, W, H);
+  const cx = W / 2, cy = H / 2;
+
+  // Kinetic hook: two words land on consecutive beats, leave before the morph.
+  const hookOut = 1 - progress(t, 1.2, 1.5);
+  const w1 = track(t, [[0, 120], [0.05, 0]], HEAVY);
+  const w2 = track(t, [[0, 120], [0.55, 0]], HEAVY);
+  text("8 сар.", cx, cy - 380 * u - w1 * u, 150, 800, C.paper, spring(t, SNAPPY) * hookOut);
+  text("1 мэргэжил.", cx, cy - 220 * u - w2 * u, 110, 800, C.soft, spring(t - 0.5, SNAPPY) * hookOut);
+
+  // The one shape: pill -> card -> pill, never cut.
+  const sw = track(t, shapeW, UI) * u, sh = track(t, shapeH, UI) * u;
+  const fillMix = spring(t - 1.5, UI) - spring(t - 3.5, UI);
+  g.fillStyle = fillMix > 0.5 ? C.paper : C.blue;
+  roundRect(cx - sw / 2, cy - sh / 2, sw, sh, track(t, radius) * u);
+  g.fill();
+
+  // Content enters after the morph starts and leaves before the next one.
+  const inCard = clamp(spring(t - 1.8, SNAPPY) - spring(t - 3.2, SNAPPY));
+  // Step numbers on whole frames: motion blur averages sub-frames, and changing
+  // digits inside one frame smear into an unreadable ghost.
+  const tf = Math.floor(t * 30) / 30;
+  const count = Math.round(1331 * clamp(spring(tf - 2.0, HEAVY)));
+  text(count.toLocaleString("en-US"), cx, cy - 40 * u, 200, 800, C.ink, inCard);
+  text("Pinebaatar инженер", cx, cy + 120 * u, 56, 500, C.blue, inCard);
+  const inPill = 1 - clamp(spring(t - 1.2, SNAPPY) - spring(t - 3.9, SNAPPY));
+  text("Элсэх", cx, cy, 48, 800, C.paper, inPill);
+
+  // Cursor drives the changes; same position at 0 s and 6 s so the loop is seamless.
+  const [px, py] = trackVec(t, cursor, SNAPPY);
+  const press = 1 - 0.15 * (spring(t - 1.3, SNAPPY) - spring(t - 1.5, SNAPPY));
+  g.save();
+  g.translate(cx + (px - 540) * u, cy + (py - 960) * u);
+  g.scale(press * u, press * u);
+  g.fillStyle = C.paper;
+  g.strokeStyle = C.ink;
+  g.lineWidth = 4;
+  g.beginPath();
+  g.moveTo(0, 0); g.lineTo(0, 64); g.lineTo(18, 48); g.lineTo(32, 76); g.lineTo(42, 70); g.lineTo(30, 44); g.lineTo(54, 44);
+  g.closePath();
+  g.fill(); g.stroke();
+  g.restore();
+}
+
+window.seek = (t) => paint(clamp(t, 0, window.film.duration));
+
+// Preview only: real-time playback in a normal browser tab. Never used in render mode.
+if (!q.has("render")) {
+  const t0 = performance.now();
+  const loop = () => { seek(((performance.now() - t0) / 1000) % window.film.duration); requestAnimationFrame(loop); };
+  window.ready.then(loop);
+} else {
+  window.ready.then(() => seek(0));
+}
+</script>
+</body>
+</html>
