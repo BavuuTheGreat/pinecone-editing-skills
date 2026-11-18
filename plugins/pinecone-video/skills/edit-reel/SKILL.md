@@ -18,6 +18,7 @@ already posts.
 |---|---|---|---|
 | Testimonial / seated interview | `themes/testimonial.md` | `testimonial-reel` skill | **Ready** (review-approved) |
 | PineQuest impression (participant / judge) | `themes/pinequest-testimonial.md` | `testimonial-reel/engine/pinequest.py` | **Ready** (review-approved) |
+| Engineers matter more with AI (series) | `themes/engineers-matter-ai.md` | `testimonial-reel/engine/engineers.py` | **Beta** (episode 1 awaiting review) |
 | Podcast clip | `themes/podcast-clip.md` | `podcast-clipper` skill | **Ready** |
 | Motion teaser | `themes/motion-teaser.md` | `motion-studio` skill | **Ready** |
 | Event recap | `themes/event-recap.md` | `scripts/assemble.py` + `brand-motion` | Beta |
@@ -60,6 +61,7 @@ required and the footage doesn't answer (names spelled exactly, event name, CTAâ
 
 - **Ready themes:** hand off to the named skill and follow it exactly. Its rules beat this file.
   PineQuest impression: follow the card's recipe (job file + `pinequest.py`).
+  Engineers matter more with AI: follow the card's recipe (job file + `engineers.py`); it has its own smooth-transition rules.
 - **Beta themes:** follow the card's recipe:
   1. Transcribe if the card has speech captions (`../testimonial-reel/references/transcription.md`).
   2. Write `edl.json` (format in `scripts/assemble.py`), picking clips by the card's structure.

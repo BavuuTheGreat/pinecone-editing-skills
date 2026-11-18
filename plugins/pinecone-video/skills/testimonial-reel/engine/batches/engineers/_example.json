@@ -1,0 +1,202 @@
+{
+  "_comment": "Copy to <job folder>/job.json (outside the repo). Paths are relative to the job file. Run: python3 -I engineers.py <job>.json --plan, then without --plan. Theme card: edit-reel/references/themes/engineers-matter-ai.md",
+  "theme": "engineers-matter-ai",
+  "file_stem": "EngineersMatterMoreWithAI_EP01",
+  "out_dir": "out",
+  "concurrency": 2,
+  "person": {
+    "name": "<Нэр, confirmed>",
+    "role": "<role, confirmed>"
+  },
+  "source": "<presenter take, any orientation; ffmpeg auto-rotates>",
+  "speech": {
+    "start": 0,
+    "end": 0,
+    "_": "source seconds the talk lives in. Pauses longer than min_pause are shortened to 2 x keep and the take is cut there: a hard cut (default), few. lead/tail = room tone kept before the first and after the last word.",
+    "min_pause": 0.8,
+    "keep": 0.3,
+    "lead": 0.35,
+    "tail": 0.7
+  },
+  "pieces": [
+    {
+      "id": "talk",
+      "start": 0,
+      "end": 0,
+      "_": "same span as speech; only --align reads pieces"
+    }
+  ],
+  "screens": {
+    "reel": {
+      "src": "<screen recording>",
+      "t": 0,
+      "seconds": 4.5,
+      "crop": "w:h:x:y",
+      "width": 968,
+      "_": "crop = the inspiration reel only (never usernames or comments); width 968 for a tall card. seconds = the part of the recording with real motion (find it by frame differencing), NOT the idle tail: it is retimed 0.6x-1.6x to play for the whole time the card is up"
+    },
+    "demo": {
+      "src": "<screen recording>",
+      "t": 12,
+      "crop": "w:h:x:y",
+      "width": 2016,
+      "_": "crop = the page content, without the browser tabs and address bar. width 2016 for the wide window"
+    },
+    "demo_panel": {
+      "src": "<screen recording>",
+      "crop": "w:h:x:y",
+      "width": 2016,
+      "_": "a tighter crop with the same 1.877 aspect, e.g. the class cards"
+    }
+  },
+  "stacks": [
+    {
+      "screen": "reel",
+      "kind": "tall",
+      "at": [
+        0,
+        0
+      ],
+      "enter": "slide",
+      "label": "@<creator handle read from the post header>",
+      "_": "kind tall = reel card left, presenter right; at = SOURCE seconds. label = the creator's Instagram handle (credit)"
+    },
+    {
+      "kind": "wide",
+      "enter": "rise",
+      "_": "a wide window with layers one after another",
+      "layers": [
+        {
+          "type": "map",
+          "at": [
+            0,
+            0
+          ],
+          "cues": {
+            "arrive": 0,
+            "last50": 0,
+            "solved": 0
+          },
+          "_": "black-and-white A->B map: A start, route draws to the street where a map app says arrived (cue arrive), the last 50 m dashed (cue last50), B = Pinecone Academy lights up (cue solved). All cues in SOURCE seconds"
+        },
+        {
+          "type": "video",
+          "screen": "demo",
+          "label": "Office guide",
+          "scenes": [
+            {
+              "t": 0,
+              "seconds": 3.0,
+              "at": [
+                0,
+                0
+              ],
+              "_": "recording t/seconds shown while the presenter says the words between at[0] and at[1] (source seconds); retimed 0.5x-2.2x"
+            },
+            {
+              "screen": "demo_panel",
+              "t": 0,
+              "seconds": 2.0,
+              "at": [
+                0,
+                0
+              ],
+              "_": "a scene can use another crop of the recording (screens.demo_panel = a close-up of a side panel). Every stretch of the recording once: no replays"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "num": "01",
+      "label": "Асуудал",
+      "at": [
+        0,
+        0
+      ],
+      "_": "the chapter pill swaps in place at each chapter start; no transition on chapter changes. First chapter starts after the opening small talk"
+    }
+  ],
+  "captions": [
+    [
+      0.0,
+      0.0,
+      "source-time from|to|text, 2-4 words. Times may be rough: run --align once the text is final. [hidden words] are spoken but not shown (they only help --align)"
+    ]
+  ],
+  "next_label": "EP 02 · soon",
+  "end_card": "default",
+  "_end_card": "\"default\" = assets/end_card_9x16.mp4 from the brand pack (skipped when missing); or a path; or omit",
+  "speech_over_bed_db": 12.0,
+  "_speech_over_bed_db": "speech level over the track in dB: 12 in the 30 s cut (louder music, voice still clearly on top), 16 in the long cut",
+  "intro_sfx_boost_db": 12.0,
+  "music_style": {
+    "bpm": 108,
+    "seed": 3,
+    "key": 0
+  },
+  "_music_style": "upbeat swing-jazz bed. bpm = tempo (108), key = transpose in semitones, seed = which fills are played.",
+  "camera_amount": 0,
+  "_camera": "0 (default) = locked-off. 0.4 = a slow push/pull/drift on about 4 in 10 takes (rejected on EP01 as weird). camera_seed, transition_seed, fx_seed change patterns",
+  "transitions": "cut",
+  "_transitions": "cut (default) = hard cuts inside pauses, like the testimonial reels. auto = rotating soft dissolves/wipes (tried on EP01, rejected as repetitive)",
+  "leaks": "auto",
+  "_leaks": "the intro->first shot leak (pink) is automatic. leaks_at = SOURCE seconds (or {at, tone: pink|green}) where one more leak is necessary: episode 1 uses green where the story starts and pink/purple at the two chapter changes. Never on cuts. off = none",
+  "caption_y": 1620,
+  "leaks_at": [
+    {
+      "at": 0,
+      "tone": "green"
+    },
+    {
+      "at": 0,
+      "tone": "pink"
+    }
+  ],
+  "_caption_y": "caption bottom edge in px (1620 = bottom of the screen). Captions use the testimonial-reel style: GIP (brand pack) white, no box, hard cut on/off",
+  "intro_meta": false,
+  "_intro_meta": "false (default) = the intro and sign-off show only the title. true = also the EP tag and the pinecone mark + wordmark top row (earlier versions).",
+  "chapter_style": "pill",
+  "_chapter_style": "pill (default) or rail: a slim process rail (a bead travels along a line, the step lights up as it arrives) beside the chapter name. The chapter name always resolves out of green noise (dual-scramble).",
+  "look": "split",
+  "_look": "split (default) = demo edge to edge on top (1080x575), presenter under it, chapter plate callouts, like the reviewer's reference reel. cards = the earlier rounded-card layout over a blurred room.",
+  "show_chapters": false,
+  "_show_chapters": "false (default): no chapter labels on screen. true: a plate callout (split look) or a pill (cards look) at each chapter start from `chapters`.",
+  "caption_style": "gip",
+  "_caption_style": "plate (default) = white Tinos serif on a tight black plate like the reference reel; gip = the testimonial-reel caption (brand-pack font, no box)",
+  "music_file": "music/<track>.m4a",
+  "music_start": 0,
+  "music_credit": "<title> by <artist>, <url>",
+  "_music_file": "optional: a supplied track replaces the synthesized bed (download audio only with yt-dlp -x --audio-format m4a --no-playlist <url>). Check the licence; put music_credit in the post caption. Omit for the synthesized swing-jazz bed.",
+  "caption_face": "source",
+  "_caption_face": "serif of the black-plate caption: source (default, slim Source Serif 4 40 px) | tinos | cormorant",
+  "opening": "none",
+  "_opening": "none = the talk starts on frame 0 (30 s cut); omit for the old 3.9 s Ghost Text intro first",
+  "closer": true,
+  "_closer": "true = the Ghost Text title plays at the END after a pink leak (replaces the sign-off); needs no end_card",
+  "clips": [
+    {
+      "from": 0.0,
+      "to": 0.0,
+      "_": "source seconds of a clip to keep, in the order they play. Edges snap to the quietest 40 ms beside them (snap:false turns it off). Total of all clips + 5 s closer must be <= 30 s"
+    }
+  ],
+  "stack_move_frames": 10,
+  "curtain_frames": 12,
+  "brand_moments": [{"name": "claude", "word": "Claude", "at": [41.21, 41.79], "color": "#FF8F5E"}, {"name": "higgsfield", "word": "Higgsfield", "at": [41.91, 42.59], "color": "#B8F229"}],
+  "_brand_moments": "source-second spans where a company is named: colour wash + logo above the head + tinted caption word. name: claude | higgsfield. Logos are third-party trademarks, so assets/claude_mark.png and assets/higgsfield_mark.png are git-ignored: put your own copies there (512 px PNG, transparent or app icon); without them only the wordmark shows",
+  "name_tag": {
+    "name": "<Name in Mongolian Cyrillic>",
+    "role": "<Role in English>",
+    "from": 0.25,
+    "to": 3.0
+  },
+  "_name_tag": "plain text, no plate (name white semibold, role soft white, both with a soft shadow) lower left; slides in/out smoothly; name in Mongolian, role in English; shown once at the start. closer_signature: true would also sign the closer (off by default)",
+  "closer_ep": "EP 01",
+  "_closer_ep": "small episode label under the closer title (episode 1 shows it only there)",
+  "target_seconds": 32,
+  "_target_seconds": "the closer is lengthened (4.4-7 s) so the whole video lands on this length; reviewer allowed 32 s for episode 1 (the closer gets the leftover time); default 30",
+  "closer_signature": false
+}

@@ -17,3 +17,10 @@ assets/GIP-Regular.woff2
 assets/end_card_9x16.mp4
 assets/pinecone_mark.svg
 assets/pinequest/pq_s5_end_card.mp4
+!batches/engineers/
+batches/engineers/*
+!batches/engineers/_*.json
+
+# Third-party logos (trademarks): local only, never in the public repo
+assets/claude_mark.png
+assets/higgsfield_mark.png

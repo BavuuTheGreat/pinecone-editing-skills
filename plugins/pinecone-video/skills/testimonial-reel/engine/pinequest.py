@@ -257,18 +257,19 @@ def check_captions(job, base, clips, items, caps, limit=0.15):
     print(f"{len(caps)} captions, {bad} with |offset| > {limit}s")
 
 
-def finish(src, body_end, out, bed=None, sfx=None, over_bed=14.0):
+def finish(src, body_end, out, bed=None, sfx=None, over_bed=14.0, speech_from=0.0, intro_boost_db=0.0, end_card=True, static_master=False):
     """Speech level per section (end card sting 0.5 dB under the body), bed + SFX under the body,
     then two-pass loudnorm to -14.5 LUFS / -1.5 dBTP (loudnorm's own true-peak limiter; it falls back to
     dynamic mode by itself when linear gain can't hold the ceiling). The old alimiter loop overshot to +5 dBTP."""
     dur = media.duration(src)
-    sp = media.lufs_file(src, 0, body_end)
-    endl = media.lufs_file(src, body_end + 0.1, dur - body_end - 0.2)
-    gb, ge = -14.5 - sp, -15.0 - endl
+    sp = media.lufs_file(src, speech_from, body_end - speech_from)  # speech_from: skip a speechless intro (series themes)
+    endl = media.lufs_file(src, body_end + 0.1, dur - body_end - 0.2) if end_card else sp
+    gb, ge = -14.5 - sp, (-15.0 - endl if end_card else -14.5 - sp)
     vol = f"volume='if(lt(t,{body_end:.3f}),{10 ** (gb / 20):.4f},{10 ** (ge / 20):.4f})':eval=frame"
     if bed:
-        g = -14.5 - over_bed - media.lufs_file(bed, 0, body_end)
-        pre = (f"[0:a]{vol}[s];[1:a]volume={g:.2f}dB,apad[m];[2:a]volume={g - 1:.2f}dB,apad[x];"
+        g = -14.5 - over_bed - media.lufs_file(bed, speech_from, body_end - speech_from)
+        boost = f",volume='if(lt(t,{speech_from:.3f}),{10 ** (intro_boost_db / 20):.3f},1)':eval=frame" if intro_boost_db else ""
+        pre = (f"[0:a]{vol}[s];[1:a]volume={g:.2f}dB,apad[m];[2:a]volume={g - 1:.2f}dB{boost},apad[x];"
                f"[s][m][x]amix=inputs=3:duration=first:normalize=0,")
         inp = ["-i", src, "-i", bed, "-i", sfx]
     else:
@@ -279,7 +280,11 @@ def finish(src, body_end, out, bed=None, sfx=None, over_bed=14.0):
     j = json.loads(m[m.rindex("{"):m.rindex("}") + 1])
     ex = (f":measured_I={j['input_i']}:measured_TP={j['input_tp']}:measured_LRA={j['input_lra']}"
           f":measured_thresh={j['input_thresh']}:offset={j['target_offset']}:linear=true")
-    media.run([*inp, "-filter_complex", pre + ln + ex + ",aresample=48000[o]", "-map", "0:v", "-map", "[o]",
+    if static_master:  # one constant gain + a peak limiter: loudnorm's dynamic fallback lifts quiet intros (series theme: intro was -12 LUFS)
+        master = f"volume={-14.5 - float(j['input_i']):.2f}dB,alimiter=limit=0.84:level=disabled:attack=5:release=60,aresample=48000"
+    else:
+        master = ln + ex + ",aresample=48000"
+    media.run([*inp, "-filter_complex", pre + master + "[o]", "-map", "0:v", "-map", "[o]",
                "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-t", f"{dur:.3f}", out])
     lu, tp = media.loudness_report(out)
     if tp > -1.0:  # rare: AAC overshoot after linear gain; one more pass in dynamic mode

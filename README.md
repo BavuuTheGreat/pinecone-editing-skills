@@ -57,6 +57,7 @@ Paste the reviewer's comments back to Claude for the fix round.
 |---|---|---|
 | Testimonial / seated interview | Ready (review-approved) | `testimonial-reel` |
 | PineQuest impression (participant / judge) | Ready (review-approved) | `testimonial-reel/engine/pinequest.py` |
+| Engineers matter more with AI (series) | Beta (episode 1 in review) | `engineers-series` (`testimonial-reel/engine/engineers.py`) |
 | Podcast clip | Ready | `podcast-clipper` |
 | Motion teaser | Ready | `motion-studio` |
 | Event recap, presenter promo, creator collab, office trend | Beta (first reels go through review) | `edit-reel/scripts/assemble.py` + `brand-motion` |
@@ -64,6 +65,10 @@ Paste the reviewer's comments back to Claude for the fix round.
 
 Each theme's card (structure, pace, captions, music, checklist, review lessons) is in
 `plugins/pinecone-video/skills/edit-reel/references/themes/`.
+
+## Trying the Engineers series
+
+Step-by-step guide, file map and what is not in the repo: [docs/engineers-series/README.md](docs/engineers-series/README.md).
 
 ## Skills in this plugin
 
@@ -75,6 +80,7 @@ Each theme's card (structure, pace, captions, music, checklist, review lessons) 
 | `ai-video-playbook` | Format → shot list → film / generate / template per shot → prompts → guardrails |
 | `brand-motion` | Remotion brand templates: counter, list card, kinetic title, word captions, end card |
 | `podcast-clipper` | Word-level transcript → 30-60 s moments → 9:16 cuts → captions |
+| `engineers-series` | Episodes of "Engineers matter more with AI": presenter + screen inserts, Ghost Text intro, light-leak transition, GIP captions from the reel generator, swing-jazz bed, Annnimate-style curtain/scramble/split-flap motion. Engine lives in `testimonial-reel/engine` |
 | `motion-studio` | Code-rendered motion films with beat-synced cuts, code-made music and a self-review loop |
 
 ### Installed from upstream by `install.sh`
@@ -109,7 +115,7 @@ plugins/pinecone-video/
   skills/edit-reel/                        # router, theme cards, house style, general assembler
   skills/testimonial-reel/                 # SKILL.md, references/, scripts/setup.py
     engine/                                # run.py, new_batch.py, pinequest.py, reelpipe/, src/ (Remotion), assets/
-  skills/reel-audit/  ai-video-playbook/  brand-motion/  podcast-clipper/  motion-studio/
+  skills/reel-audit/  ai-video-playbook/  brand-motion/  podcast-clipper/  motion-studio/  engineers-series/
 docs/content-factory/editing-unit.md       # member guide (Mongolian)
 docs/tdd/                                  # Editing rulebook and checklist
 audits/2026-10-pineconemongolia/           # first reel audit

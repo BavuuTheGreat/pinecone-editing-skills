@@ -1,0 +1,21 @@
+{
+  "_": "Shared by src/eng/EngIntro.tsx and reelpipe/eng_music.py (key sounds, tab, chimes land on these frames; the title lifts away over exitStart..presenterStart and a light leak peaks on presenterStart, where the first shot takes over). 30 fps.",
+  "fps": 30,
+  "line1": "Engineers",
+  "line2": "matter",
+  "ghost": "<more/>",
+  "ghost2": "with AI",
+  "line1Keys": [7, 10, 12, 15, 17, 20, 22, 25, 27],
+  "line2Keys": [35, 38, 40, 43, 45, 48],
+  "ghostIn": 56,
+  "shimmer": [58, 80],
+  "tabIn": 68,
+  "tabPress": 88,
+  "acceptStart": 90,
+  "acceptPerChar": 1.1,
+  "caretOff": 108,
+  "exitStart": 106,
+  "presenterStart": 116,
+  "revealFrames": 8,
+  "standaloneFrames": 150
+}
