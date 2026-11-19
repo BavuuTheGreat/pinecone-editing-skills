@@ -35,7 +35,7 @@ Instagram (for project shots), judge title and company (judge reels).
 | Logo | Grey chevron mark top-centre (opacity 0.55) on every clip, card and insert |
 | Transition sounds | **None by default** (2026-11-16). With `card_sfx: true`: one soft sound per card, a different one each time (swell, pluck, swish, low pulse), none on inserts or answers; mixed 1 dB under the bed. Only the end-card glitch stays. The music still filters down on every card. |
 | Music | Original 122 BPM tech bed (`reelpipe/pq_music.py`, synthesized, safe to post): pumping chords and arp, drums drop out and the music filters down on each card, hit when the answer lands. Speech **14 dB** over the bed (`speech_over_bed_db`, the default; 11 was "a bit loud", review 2026-11-16). Every reel in a series should not share one track: set `music_style` (`{"bpm": 128, "seed": 5, "key": 3}`, a second song: major key, broken beat) and change the numbers per reel; omit it for the original bed. SFX: whoosh in/out of cards and inserts, hits, glitch. |
-| Music, real song | Only when the member asks for one: `"music": "music/<file>.mp3"`, `"music_opts": {"start": 14.9, "card_db": -7}`, `"speech_over_bed_db": 13`. Free-licence only (CC BY 4.0 / CC0) from a library whose licence page you can read; save the licence in `<job>/music/LICENSE.txt` and put the credit line in `music_credit` and in the post caption. `start` skips a quiet intro so the groove is there from frame 0; the song dips and is low-passed on question cards and fades into the end card. A different song for each reel of one team or one posting week. |
+| Music, real song | Only when the member asks for one: `"music": "music/<file>.mp3"`, `"music_opts": {"start": 14.9, "card_db": -7}`, `"speech_over_bed_db": 13`. Free-licence only (CC BY 4.0 / CC0) from a library whose licence page you can read; save the licence in `<job>/music/LICENSE.txt` and put the credit line in `music_credit` and in the post caption. `start` skips a quiet intro so the groove is there from frame 0; the song dips and is low-passed on question cards and fades into the end card. A different song for each reel of one team or one posting week. **Pick a simple, steady track, on the slow side** (review 2026-11-19: a busy 129 BPM chiptune track got "арын аяыг нь жоохон энгийн аяар сонгох", a 123 BPM one got "жоохон удаан темптэй болгох уу"): about 80-120 BPM, even loudness from start to end, few layers, and keep it 14 dB under the voice. |
 | End | PineQuest S5 end card (`assets/pinequest/pq_s5_end_card.mp4`, 6.2 s, its own sting) |
 | Loudness | -14.5 LUFS, true peak ≤ -1 dBTP |
 | Post caption | `PineQuest S5-ийн <III байр / ялагч / оролцогч>, <Баг> багийн гишүүн <Нэр>-ийн сэтгэгдэл ⭐️` + the Bootcamp CTA lines |
@@ -86,7 +86,7 @@ Use these when the member asks for fuller answers ("let him finish") or for the 
 | Remove a pause or hesitation without clipping speech | piece `"join": true` (continues the previous piece) | Cut only gaps of 0.7 s or more, fillers ("ээ…", a restarted word) and false starts. Leave gaps under 0.6 s: more jump cuts look worse than a short pause. Each piece starts 0.1 s before the first word (0.25 s when it opens on a soft consonant) and ends 0.15-0.2 s after the last. Joined pieces hard-cut (no whip); every other one is punched in 1.09 so the jump reads as a camera move. Pieces under about 1 s should sit under an insert. |
 | Even loudness inside one answer | piece `"level": [start, end]` (the whole answer span) | Without it each short piece is gained on its own and soft trailing words jump in level. |
 | Cold open = what the team built | several `"answer": "hook"` pieces + `"hook": {"seconds": 2.9}` | The hook is the full sentence that says what they made; headline on the face for the first 3 s, product inserts start when the headline leaves. Headline and inserts never overlap. |
-| Speaker's face fills the top of the frame | `"hook": {"top": 800}` | Headline sits on the chest on a soft dark band (any `top` of 600 or more). Check frame 40: no text over the eyes. |
+| Speaker's face fills the top of the frame | no `hook` headline at all (or `"hook": {"top": 800}` only if the member insists) | A result headline on the chest was rejected in review (2026-11-19: "энэ том текстийг нь хас"). When the headline cannot sit at the top without covering the face, leave it out: the first sentence and its captions carry the open. |
 | Product UI that only exists inside a team reel | `grabs` with `crop` to the 16:9 panel, insert `"layout": "framed"` | When the team's site is a login wall, crop the app shots from their own reel. Never sign in to or create an account on a team's platform to record it. |
 | Hide a jump cut | an insert whose `at` and `until` are in different pieces | The insert runs across the join. |
 
@@ -96,6 +96,15 @@ speaker's next full sentence instead of nudging the cut.
 
 Length: a "fuller answers" reel runs 85-95 s. Keep every finished sentence of the answers that are used; shorten by dropping a whole
 answer (the intro, a preamble), never by cutting inside one.
+
+### After review round 1 on those reels (2026-11-19)
+
+- **Headline.** No result headline ("PineQuest S5-д 2-р байр эзэлсэн …") over the speaker's chest. A quote headline at the top was not objected to.
+- **The reviewer names the hook.** When a comment says "make this line the hook" ("энэ хэсгийг нь hook болгоод оруулъя"), move that sentence to the
+  cold open, use it as the headline (key word in the pill), put no captions under it, and end its answer one sentence earlier so the line is
+  not said twice. Check the new end of that answer by ear: the speaker often runs straight on with no pause.
+- **Caption wording from the reviewer wins** over Speechmatics and whisper ("бензин юм байна шүү", where both tools heard something else).
+- **Music**: simpler and slower than the first pick (see the Music, real song row).
 
 ## Check
 - [ ] Headline small enough (longest line ≤ 80 % width) and clear of the logo
@@ -108,6 +117,7 @@ answer (the intro, a preamble), never by cutting inside one.
 - [ ] Inserts fade and pan (no pop), headline and inserts never overlap, no burned-in text inside an insert
 - [ ] After every insert: either 1.5 s or more of the speaker, or straight into the card. Never a flash of the speaker
 - [ ] Every join: no clipped word before or after (whisper the output around each join)
+- [ ] No result headline over the chest; music simple, steady, 14 dB under the voice
 - [ ] Song and insert clips differ from the team's other reels; real-song credit line is in the post caption
 - [ ] No logo or print on the speaker's clothes under the captions, also during punch-ins. If there is, set `"caption_style": {"baseline": 1530}` in the job (a hoodie chest logo)
 - [ ] Captions readable on white or light clothes. If not, set `"caption_style": {"shadow": "drop-shadow(0 2px 3px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(0,0,0,0.75))"}` (a white sweater)
