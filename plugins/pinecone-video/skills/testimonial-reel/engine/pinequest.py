@@ -26,6 +26,8 @@ from reelpipe import media, stages  # noqa: E402
 ENGINE = stages.ENGINE
 FPS, CPS = 30, 22
 HOOK_TOP = 230  # chevron logo spans y 86-136; the headline starts well below it (review 2026-11-16 "logotoigoo naalddag"); old jobs with top 150 are lifted to this
+JOIN_PUNCH = (1.09, 26)  # scale, y shift (px) of the alternate framing on a jump cut (piece "join": true)
+MIN_FACE_TAIL = 1.5  # s of speaker that must remain after an insert, else the insert runs to the end of the answer
 CAPSTYLE = {"size": 47, "gap": 13, "baseline": 1292, "cx": 540, "thin": False}
 
 
@@ -122,6 +124,7 @@ def plan(job, clips, pub):
             k0 = zoom[hook_id][0]
             zoom[hook_id] = [{"t": 0, "scale": k0.get("scale", 1), "y": k0.get("y", 0), "still": True}]
     keys = key_samples() if typing and card_sfx(job) else None
+    run = 0
     for c in clips:
         q = cards.get(c["answer"])
         if q and not any(i.get("answer_card") == c["answer"] for i in items):
@@ -133,8 +136,13 @@ def plan(job, clips, pub):
                 type_track(q, os.path.join(pub, item["sfx"]), keys, seed=len(items))
             items.append(item)
             t += round(secs * FPS) / FPS
+        # join: this piece continues the previous one after a removed pause (jump cut, no whip). Every other
+        # joined piece sits slightly punched in, so the jump reads as a camera move, not a glitch.
+        run = run + 1 if c.get("join") else 0
+        z = zoom.get(c["id"]) or ([{"t": 0, "scale": JOIN_PUNCH[0], "y": JOIN_PUNCH[1], "still": True}] if run % 2 == 1 else None)
         items.append({"kind": "clip", "src": c["src"], "answer": c["answer"], "seconds": c["seconds"],
-                      **({"zoom": zoom[c["id"]]} if c["id"] in zoom else {}), **({"hook": True} if c["id"] == hook_id else {})})
+                      **({"join": True} if c.get("join") else {}),
+                      **({"zoom": z} if z else {}), **({"hook": True} if c["id"] == hook_id else {})})
         starts[c["id"]] = (t, c["start"])
         t += round(c["seconds"] * FPS) / FPS
     end_s = round(media.duration(os.path.join(pub, "pq_end.mp4")) - 0.05, 2)
@@ -155,16 +163,20 @@ def plan(job, clips, pub):
         pid = row[3] if len(row) > 3 else next(c["id"] for c in clips
                                                if c["id"] != hook_id and c["start"] - 0.06 <= a < c["start"] + c["seconds"])
         end_clip = starts[pid][0] + by_id[pid]["seconds"]
-        caps.append({"from": round(reel(pid, a), 3), "to": round(min(reel(pid, b) + 0.12, end_clip), 3), "text": text})
+        nxt = clips[[c["id"] for c in clips].index(pid) + 1:][:1]
+        hold = 0.0 if (nxt and nxt[0].get("join")) else 0.12  # a line never hangs over a jump cut
+        caps.append({"from": round(reel(pid, a), 3), "to": round(min(reel(pid, b) + hold, end_clip), 3), "text": text})
     # keep captions off transitions: start after the in-edge, end before the out-edge (6 frames each side)
     edge = 6 / FPS
     for c in caps:
-        for cl in clips:
+        for k, cl in enumerate(clips):
             r0 = starts[cl["id"]][0]
             r1 = r0 + cl["seconds"]
             if r0 - 0.05 <= c["from"] < r1:
-                c["from"] = round(max(c["from"], r0 + (edge if r0 > 0 else 0)), 3)
-                c["to"] = round(min(c["to"], r1 - edge), 3)
+                e_in = 0 if (r0 == 0 or cl.get("join")) else edge  # no transition on a jump cut: nothing to keep clear of
+                e_out = 0 if (k + 1 < len(clips) and clips[k + 1].get("join")) else edge
+                c["from"] = round(max(c["from"], r0 + e_in), 3)
+                c["to"] = round(min(c["to"], r1 - e_out), 3)
     caps = [c for c in caps if c["to"] - c["from"] > 0.2]
     caps.sort(key=lambda c: c["from"])
     for i in range(len(caps) - 1):
@@ -172,14 +184,30 @@ def plan(job, clips, pub):
     ins = []
     for x in job.get("inserts", []):
         f, u = reel(*x["at"]), reel(*x["until"])
-        cid = x["until"][0]  # inserts end before the clip's out-edge so they never sit sharp over a transition
-        u = min(u, starts[cid][0] + by_id[cid]["seconds"] - 8 / FPS)
+        cid = x["until"][0]
+        # end of the answer this insert sits in (the last joined piece after the `until` clip)
+        k = [c["id"] for c in clips].index(cid)
+        while k + 1 < len(clips) and clips[k + 1].get("join"):
+            k += 1
+        ans_end = starts[clips[k]["id"]][0] + clips[k]["seconds"]
+        # Never show a short flash of the speaker between an insert and the next card (review 2026-11-19): if less than
+        # MIN_FACE_TAIL s of the answer is left, the insert stays to the answer's last frame and dims out with it.
+        dim_out = ans_end - u < MIN_FACE_TAIL
+        if dim_out:
+            u = ans_end
+        else:  # otherwise inserts end before the clip's out-edge so they never sit sharp over a transition
+            u = min(u, starts[cid][0] + by_id[cid]["seconds"] - 8 / FPS)
         f = max(f, starts[x["at"][0]][0] + 6 / FPS)
         d = {k: x[k] for k in ("src", "media", "layout", "videoStart") if k in x}
-        ins.append({**d, "from": round(f, 3), "seconds": round(u - f, 3)})
+        ins.append({**d, "from": round(f, 3), "seconds": round(u - f, 3), "pan": len(ins) % 4, **({"dimOut": True} if dim_out else {})})
+    # back-to-back inserts cross-fade: the earlier one stays under the next one's 10-frame fade-in instead of cutting
+    for a_, b_ in zip(ins, ins[1:]):
+        if 0 <= b_["from"] - (a_["from"] + a_["seconds"]) < 0.4:
+            a_["seconds"] = round(b_["from"] + 12 / FPS - a_["from"], 3)
+            a_["cutOut"] = True
     base = {"cardTyping": typing, "hookMotion": hook_motion(job), "shrinkSeconds": 1.1, "holdSeconds": 0, "builtInOutro": False, "titles": [], "items": items, "inserts": ins}
     if hook_id:
-        base["hook"] = {"from": 0, "seconds": round(round(by_id[hook_id]["seconds"] * FPS) / FPS, 3),
+        base["hook"] = {"from": 0, "seconds": round(round(job["hook"].get("seconds", by_id[hook_id]["seconds"]) * FPS) / FPS, 3),
                         "lines": job["hook"]["lines"], "top": max(job["hook"].get("top", HOOK_TOP), HOOK_TOP), "motion": hook_motion(job)}
     return base, caps, body_end
 
@@ -255,6 +283,25 @@ def check_captions(job, base, clips, items, caps, limit=0.15):
         bad += bool(flag)
         print(f"{i:3d} {c['from']:6.2f} {s:7.2f}  {c['text'][:34]:34s} {'' if off is None else f'{off:+7.2f}'}  {flag}")
     print(f"{len(caps)} captions, {bad} with |offset| > {limit}s")
+
+
+def song_bed(song, base, body_end, out, o):
+    """Bed from a supplied song. music_opts: start (s into the song), card_db (level on cards, default -7),
+    fade_in, fade_out. Cards get a low-pass + dip (the same 'music breaks for the question' idea as the generated bed)."""
+    t, cards = 0.0, []
+    for it in base["items"]:
+        n = round(it["seconds"] * FPS) / FPS
+        if it["kind"] == "question":
+            cards.append((t, t + n))
+        t += n
+    start, fi, fo = o.get("start", 0.0), o.get("fade_in", 0.25), o.get("fade_out", 1.6)
+    dip = 10 ** (o.get("card_db", -7.0) / 20)
+    en = "+".join(f"between(t,{a - 0.05:.3f},{b - 0.08:.3f})" for a, b in cards) or "0"
+    end = body_end + 0.5
+    af = (f"aresample=48000,afade=t=in:d={fi},lowpass=f=900:enable='{en}',volume='if({en},{dip:.3f},1)':eval=frame,"
+          f"afade=t=out:st={end - fo:.3f}:d={fo}")
+    media.run(["-ss", str(start), "-t", f"{end:.3f}", "-i", song, "-af", af, "-ac", "2", out])
+    return out
 
 
 def finish(src, body_end, out, bed=None, sfx=None, over_bed=14.0, speech_from=0.0, intro_boost_db=0.0, end_card=True, static_master=False):
@@ -353,9 +400,9 @@ def main():
         if job.get("music", "generate") == "generate":
             subprocess.run([sys.executable, "-I", os.path.join(ENGINE, "reelpipe", "pq_music.py"), pl, mdir], check=True)
             bed = os.path.join(mdir, "bed.wav")
-        else:
-            bed = P(base, job["music"])
-            subprocess.run([sys.executable, "-I", os.path.join(ENGINE, "reelpipe", "pq_music.py"), pl, mdir], check=True)
+        else:  # a real song: trimmed to the body, dipped and filtered under the question cards, faded out into the end card
+            subprocess.run([sys.executable, "-I", os.path.join(ENGINE, "reelpipe", "pq_music.py"), pl, mdir], check=True)  # SFX only
+            bed = song_bed(P(base, job["music"]), b, body_end, os.path.join(mdir, "song_bed.wav"), job.get("music_opts", {}))
         out = os.path.join(out_dir, stem + "-edited.mp4")
         lu, tp = finish(os.path.join(build, "cap_render.mp4"), body_end, out, bed, os.path.join(mdir, "sfx.wav"),
                         job.get("speech_over_bed_db", 14.0))

@@ -52,9 +52,10 @@ def cut(student: dict, pieces: list[dict], public: str) -> list[dict]:
     for p in pieces:
         a = p["start"]
         d = math.floor((p["end"] - a) * FPS + 0.05) / FPS  # tolerance: ms-rounded EDL times must not lose a frame
-        dst = os.path.join(public, f"{student['key']}_{p['id']}_{round(a * 1000)}_{round(p['end'] * 1000)}.mp4")  # times in name: an edited piece never reuses a stale cut
+        dst = os.path.join(public, f"{student['key']}_{p['id']}_{round(a * 1000)}_{round(p['end'] * 1000)}{'_L%d' % round(p['level'][0] * 1000) if p.get('level') else ''}.mp4")  # times in name: an edited piece never reuses a stale cut
         if not os.path.exists(dst):
-            g = round(PIECE_LUFS - media.lufs_file(student["source"], a, d), 2)
+            la, lb = p.get("level") or (a, a + d)  # level: measure the gain over the whole answer, so pieces of one
+            g = round(PIECE_LUFS - media.lufs_file(student["source"], la, lb - la), 2)  # answer (pauses removed) keep their natural dynamics
             af = (f"[0:a]aresample=48000,volume={g}dB,alimiter=limit=0.84:level=disabled,"
                   f"afade=t=in:d=0.025,afade=t=out:st={round(d - 0.12, 4)}:d=0.12[ao]")
             media.run(["-ss", str(a), "-t", str(d), "-i", student["source"], "-filter_complex", VF + ";" + af,
