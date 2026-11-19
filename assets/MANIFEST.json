@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "music": [
+    {
+      "id": "laserpack",
+      "title": "Laserpack",
+      "artist": "Kevin MacLeod ft. DarkNES",
+      "file": "music/Laserpack.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Laserpack.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Laserpack Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "bpm": 129,
+      "bpm_note": "measured, approximate",
+      "mood": "busy chiptune electronic",
+      "themes": [],
+      "tags": [],
+      "notes": "reviewer found it too busy under speech"
+    },
+    {
+      "id": "raving-energy",
+      "title": "Raving Energy",
+      "artist": "Kevin MacLeod",
+      "file": "music/Raving Energy.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Raving%20Energy.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Raving Energy Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "bpm": 123,
+      "bpm_note": "measured, approximate",
+      "mood": "bright steady synths",
+      "themes": [],
+      "tags": []
+    },
+    {
+      "id": "nonstop",
+      "title": "Nonstop",
+      "artist": "Kevin MacLeod",
+      "file": "music/Nonstop.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Nonstop.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Nonstop Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "bpm": 129,
+      "bpm_note": "measured, approximate",
+      "mood": "synths and guitar, builds",
+      "themes": [],
+      "tags": []
+    },
+    {
+      "id": "inspired",
+      "title": "Inspired",
+      "artist": "Kevin MacLeod",
+      "file": "music/Inspired.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Inspired.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Inspired Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "bpm": 120,
+      "bpm_note": "measured, approximate",
+      "mood": "steady, even level",
+      "themes": [
+        "pinequest-testimonial"
+      ],
+      "tags": [
+        "default"
+      ]
+    },
+    {
+      "id": "easy-lemon",
+      "title": "Easy Lemon",
+      "artist": "Kevin MacLeod",
+      "file": "music/Easy Lemon.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Easy%20Lemon.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Easy Lemon Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "bpm": 82,
+      "bpm_note": "measured, approximate",
+      "mood": "laid-back",
+      "themes": [
+        "pinequest-testimonial",
+        "testimonial"
+      ],
+      "tags": []
+    },
+    {
+      "id": "funkorama",
+      "title": "Funkorama",
+      "artist": "Kevin MacLeod",
+      "file": "music/Funkorama.mp3",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funkorama.mp3",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Funkorama Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/",
+      "mood": "funky, light",
+      "themes": [
+        "engineers-matter-ai",
+        "testimonial"
+      ],
+      "tags": []
+    }
+  ],
+  "images": [],
+  "sfx": []
+}

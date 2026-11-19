@@ -1,0 +1,859 @@
+{
+ "version": 1,
+ "note": "Keyword table for theme detection. Weights 1 (common) to 3 (almost unique). Terms are lower-case; 4+ letters match as substrings (Mongolian endings change), shorter ones as whole words.",
+ "themes": {
+  "pinequest-testimonial": {
+   "label": "PineQuest impression (participant / judge)",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/pinequest-testimonial.md",
+   "status": "ready",
+   "keywords": [
+    {
+     "term": "pinequest",
+     "weight": 3
+    },
+    {
+     "term": "пайнквест",
+     "weight": 3
+    },
+    {
+     "term": "пайн квест",
+     "weight": 3
+    },
+    {
+     "term": "хакатон",
+     "weight": 2
+    },
+    {
+     "term": "hackathon",
+     "weight": 2
+    },
+    {
+     "term": "байр эзэл",
+     "weight": 3
+    },
+    {
+     "term": "баг",
+     "weight": 1
+    },
+    {
+     "term": "төсөл",
+     "weight": 2
+    },
+    {
+     "term": "сэтгэгдэл",
+     "weight": 2
+    },
+    {
+     "term": "шүүгч",
+     "weight": 3
+    },
+    {
+     "term": "тэмцээн",
+     "weight": 2
+    },
+    {
+     "term": "ялагч",
+     "weight": 2
+    },
+    {
+     "term": "оролцогч",
+     "weight": 2
+    },
+    {
+     "term": "pinequest s5",
+     "weight": 3
+    },
+    {
+     "term": "judge",
+     "weight": 2
+    },
+    {
+     "term": "participant",
+     "weight": 1
+    },
+    {
+     "term": "пайнкуэст",
+     "weight": 3
+    }
+   ],
+   "questions": [
+    "ямар төсөл хийсэн",
+    "хэцүү зүйл",
+    "таван жилийн дараа",
+    "5 жилийн дараа",
+    "зөвлөгөө",
+    "pinequest тэмцээний үеэр хэцүү зүйл байсан уу",
+    "хамгийн мартагдашгүй"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     3
+    ],
+    "orientation": "vertical",
+    "seconds": [
+     30,
+     400
+    ],
+    "screen_recording": false
+   },
+   "default_seconds": [
+    46,
+    66
+   ]
+  },
+  "testimonial": {
+   "label": "Testimonial / seated interview (bootcamp student)",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/testimonial.md",
+   "status": "ready",
+   "keywords": [
+    {
+     "term": "яагаад pinecone",
+     "weight": 3
+    },
+    {
+     "term": "сурахаар болсон",
+     "weight": 3
+    },
+    {
+     "term": "bootcamp",
+     "weight": 3
+    },
+    {
+     "term": "сорилттой",
+     "weight": 3
+    },
+    {
+     "term": "зөвлөгөө өгөх",
+     "weight": 2
+    },
+    {
+     "term": "танилцуул",
+     "weight": 2
+    },
+    {
+     "term": "оюутан",
+     "weight": 1
+    },
+    {
+     "term": "сургалт",
+     "weight": 2
+    },
+    {
+     "term": "суралцагч",
+     "weight": 2
+    },
+    {
+     "term": "элссэн",
+     "weight": 2
+    },
+    {
+     "term": "анги",
+     "weight": 1
+    },
+    {
+     "term": "багш",
+     "weight": 1
+    },
+    {
+     "term": "банканд",
+     "weight": 1
+    },
+    {
+     "term": "киноны",
+     "weight": 1
+    },
+    {
+     "term": "студент",
+     "weight": 1
+    },
+    {
+     "term": "курс",
+     "weight": 2
+    }
+   ],
+   "questions": [
+    "яагаад pinecone",
+    "яагаад pinecone-г сонгосон",
+    "хамгийн сорилттой",
+    "зөвлөгөө өгөх",
+    "өөрийгөө танилцуул",
+    "сурахаар болсон"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     6
+    ],
+    "orientation": "any",
+    "seconds": [
+     40,
+     400
+    ],
+    "screen_recording": false
+   },
+   "default_seconds": [
+    60,
+    100
+   ]
+  },
+  "engineers-matter-ai": {
+   "label": "Engineers matter more with AI (series)",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/engineers-matter-ai.md",
+   "status": "beta",
+   "keywords": [
+    {
+     "term": "claude",
+     "weight": 3
+    },
+    {
+     "term": "claude code",
+     "weight": 3
+    },
+    {
+     "term": "ai",
+     "weight": 1
+    },
+    {
+     "term": "систем",
+     "weight": 1
+    },
+    {
+     "term": "инженер",
+     "weight": 2
+    },
+    {
+     "term": "software engineer",
+     "weight": 3
+    },
+    {
+     "term": "автомат",
+     "weight": 2
+    },
+    {
+     "term": "engineers matter",
+     "weight": 3
+    },
+    {
+     "term": "бүтээсэн",
+     "weight": 1
+    },
+    {
+     "term": "кодлох",
+     "weight": 2
+    },
+    {
+     "term": "код",
+     "weight": 1
+    },
+    {
+     "term": "програм",
+     "weight": 1
+    },
+    {
+     "term": "screen recording",
+     "weight": 2
+    },
+    {
+     "term": "хиймэл оюун",
+     "weight": 2
+    },
+    {
+     "term": "cursor",
+     "weight": 2
+    },
+    {
+     "term": "prompt",
+     "weight": 2
+    }
+   ],
+   "questions": [
+    "ai ашиглаад юу бүтээсэн",
+    "яаж бүтээсэн",
+    "claude code ашиглаж",
+    "ямар асуудал шийдсэн"
+   ],
+   "footage": {
+    "videos": [
+     2,
+     6
+    ],
+    "orientation": "any",
+    "seconds": [
+     40,
+     300
+    ],
+    "screen_recording": true
+   },
+   "default_seconds": [
+    30,
+    32
+   ]
+  },
+  "podcast-clip": {
+   "label": "Podcast clip",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/podcast-clip.md",
+   "status": "ready",
+   "keywords": [
+    {
+     "term": "подкаст",
+     "weight": 3
+    },
+    {
+     "term": "podcast",
+     "weight": 3
+    },
+    {
+     "term": "episode",
+     "weight": 2
+    },
+    {
+     "term": "дугаар",
+     "weight": 1
+    },
+    {
+     "term": "ярилцлага",
+     "weight": 1
+    },
+    {
+     "term": "зочин",
+     "weight": 2
+    },
+    {
+     "term": "хөтлөгч",
+     "weight": 2
+    },
+    {
+     "term": "нэвтрүүлэг",
+     "weight": 2
+    },
+    {
+     "term": "ep",
+     "weight": 1
+    },
+    {
+     "term": "гарчиг",
+     "weight": 1
+    },
+    {
+     "term": "ярилцлагын",
+     "weight": 1
+    },
+    {
+     "term": "өнөөдрийн зочин",
+     "weight": 3
+    }
+   ],
+   "questions": [
+    "өнөөдрийн зочин",
+    "манай подкастад тавтай морил",
+    "энэ дугаарт"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     2
+    ],
+    "orientation": "horizontal",
+    "seconds": [
+     120,
+     7200
+    ],
+    "screen_recording": false
+   },
+   "default_seconds": [
+    30,
+    60
+   ]
+  },
+  "event-recap": {
+   "label": "Event recap",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/event-recap.md",
+   "status": "beta",
+   "keywords": [
+    {
+     "term": "арга хэмжээ",
+     "weight": 3
+    },
+    {
+     "term": "event",
+     "weight": 2
+    },
+    {
+     "term": "хамтрагч",
+     "weight": 2
+    },
+    {
+     "term": "partner",
+     "weight": 2
+    },
+    {
+     "term": "тайзан",
+     "weight": 3
+    },
+    {
+     "term": "stage",
+     "weight": 2
+    },
+    {
+     "term": "үзэгч",
+     "weight": 2
+    },
+    {
+     "term": "crowd",
+     "weight": 2
+    },
+    {
+     "term": "нээлт",
+     "weight": 2
+    },
+    {
+     "term": "концерт",
+     "weight": 2
+    },
+    {
+     "term": "mongolz",
+     "weight": 3
+    },
+    {
+     "term": "хамтын ажиллагаа",
+     "weight": 2
+    },
+    {
+     "term": "өдөр",
+     "weight": 1
+    },
+    {
+     "term": "уулзалт",
+     "weight": 1
+    }
+   ],
+   "questions": [
+    "арга хэмжээн дээр юу санагдсан",
+    "энд ирсэн шалтгаан",
+    "хамтрагч байгууллага"
+   ],
+   "footage": {
+    "videos": [
+     5,
+     200
+    ],
+    "orientation": "any",
+    "screen_recording": false
+   },
+   "default_seconds": [
+    45,
+    75
+   ]
+  },
+  "presenter-promo": {
+   "label": "Presenter / program promo",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/presenter-promo.md",
+   "status": "beta",
+   "keywords": [
+    {
+     "term": "хөтөлбөр",
+     "weight": 3
+    },
+    {
+     "term": "бүртгэл",
+     "weight": 3
+    },
+    {
+     "term": "бүртгүүл",
+     "weight": 3
+    },
+    {
+     "term": "хугацаа",
+     "weight": 2
+    },
+    {
+     "term": "deadline",
+     "weight": 2
+    },
+    {
+     "term": "үнэ",
+     "weight": 2
+    },
+    {
+     "term": "хөнгөлөлт",
+     "weight": 2
+    },
+    {
+     "term": "шалгалт",
+     "weight": 1
+    },
+    {
+     "term": "оруул",
+     "weight": 1
+    },
+    {
+     "term": "линк",
+     "weight": 2
+    },
+    {
+     "term": "холбоос",
+     "weight": 2
+    },
+    {
+     "term": "program",
+     "weight": 2
+    },
+    {
+     "term": "register",
+     "weight": 2
+    },
+    {
+     "term": "сар хүртэл",
+     "weight": 2
+    },
+    {
+     "term": "анги нээгдэнэ",
+     "weight": 3
+    },
+    {
+     "term": "элсэлт",
+     "weight": 3
+    }
+   ],
+   "questions": [
+    "хэрхэн бүртгүүлэх",
+    "хэзээ хүртэл бүртгэнэ",
+    "яагаад манай хөтөлбөр"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     4
+    ],
+    "seconds": [
+     20,
+     300
+    ],
+    "screen_recording": true
+   },
+   "default_seconds": [
+    30,
+    45
+   ]
+  },
+  "creator-collab": {
+   "label": "Creator collab",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/creator-collab.md",
+   "status": "beta",
+   "keywords": [
+    {
+     "term": "vlog",
+     "weight": 3
+    },
+    {
+     "term": "влог",
+     "weight": 3
+    },
+    {
+     "term": "дагагч",
+     "weight": 3
+    },
+    {
+     "term": "followers",
+     "weight": 2
+    },
+    {
+     "term": "subscribe",
+     "weight": 2
+    },
+    {
+     "term": "хамтарсан",
+     "weight": 2
+    },
+    {
+     "term": "collab",
+     "weight": 3
+    },
+    {
+     "term": "коллаб",
+     "weight": 3
+    },
+    {
+     "term": "миний суваг",
+     "weight": 3
+    },
+    {
+     "term": "өнөөдөр би",
+     "weight": 2
+    },
+    {
+     "term": "манай үзэгчид",
+     "weight": 2
+    },
+    {
+     "term": "reaction",
+     "weight": 1
+    },
+    {
+     "term": "хөтөлж",
+     "weight": 1
+    }
+   ],
+   "questions": [
+    "өнөөдөр би pinecone-д",
+    "миний дагагчид",
+    "та бүхэнд танилцуулъя"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     3
+    ],
+    "orientation": "vertical",
+    "seconds": [
+     20,
+     300
+    ],
+    "screen_recording": false
+   },
+   "default_seconds": [
+    30,
+    90
+   ]
+  },
+  "office-trend": {
+   "label": "Office trend",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/office-trend.md",
+   "status": "beta",
+   "keywords": [
+    {
+     "term": "trend",
+     "weight": 3
+    },
+    {
+     "term": "тренд",
+     "weight": 3
+    },
+    {
+     "term": "lifeatpinecone",
+     "weight": 3
+    },
+    {
+     "term": "office",
+     "weight": 2
+    },
+    {
+     "term": "оффис",
+     "weight": 2
+    },
+    {
+     "term": "бүжиг",
+     "weight": 3
+    },
+    {
+     "term": "dance",
+     "weight": 3
+    },
+    {
+     "term": "impostor",
+     "weight": 3
+    },
+    {
+     "term": "хуурамч",
+     "weight": 1
+    },
+    {
+     "term": "ажилтан",
+     "weight": 1
+    },
+    {
+     "term": "хамт олон",
+     "weight": 2
+    },
+    {
+     "term": "challenge",
+     "weight": 2
+    },
+    {
+     "term": "челлэнж",
+     "weight": 3
+    },
+    {
+     "term": "pose",
+     "weight": 1
+    }
+   ],
+   "questions": [
+    "аль нь импостор",
+    "хэн хамгийн сайн бүжиглэв"
+   ],
+   "footage": {
+    "videos": [
+     1,
+     5
+    ],
+    "orientation": "vertical",
+    "seconds": [
+     5,
+     120
+    ],
+    "screen_recording": false
+   },
+   "default_seconds": [
+    10,
+    30
+   ]
+  },
+  "motion-teaser": {
+   "label": "Motion teaser",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/motion-teaser.md",
+   "status": "ready",
+   "keywords": [
+    {
+     "term": "зарлаж байна",
+     "weight": 3
+    },
+    {
+     "term": "нээлт",
+     "weight": 1
+    },
+    {
+     "term": "эхэлнэ",
+     "weight": 2
+    },
+    {
+     "term": "тоолол",
+     "weight": 3
+    },
+    {
+     "term": "countdown",
+     "weight": 3
+    },
+    {
+     "term": "launch",
+     "weight": 3
+    },
+    {
+     "term": "teaser",
+     "weight": 3
+    },
+    {
+     "term": "тизер",
+     "weight": 3
+    },
+    {
+     "term": "удахгүй",
+     "weight": 3
+    },
+    {
+     "term": "coming soon",
+     "weight": 3
+    },
+    {
+     "term": "огноо",
+     "weight": 1
+    },
+    {
+     "term": "бүртгэл",
+     "weight": 1
+    },
+    {
+     "term": "announce",
+     "weight": 2
+    },
+    {
+     "term": "зарлал",
+     "weight": 3
+    }
+   ],
+   "questions": [
+    "хэзээ эхлэх",
+    "хаана болох"
+   ],
+   "footage": {
+    "videos": [
+     0,
+     0
+    ],
+    "seconds": [
+     0,
+     0
+    ]
+   },
+   "default_seconds": [
+    8,
+    15
+   ]
+  },
+  "brand-film": {
+   "label": "Cinematic brand film",
+   "card": "plugins/pinecone-video/skills/edit-reel/references/themes/brand-film.md",
+   "status": "plan",
+   "keywords": [
+    {
+     "term": "brand film",
+     "weight": 3
+    },
+    {
+     "term": "кино",
+     "weight": 2
+    },
+    {
+     "term": "cinematic",
+     "weight": 3
+    },
+    {
+     "term": "найруулагч",
+     "weight": 2
+    },
+    {
+     "term": "жүжигчин",
+     "weight": 3
+    },
+    {
+     "term": "metaphor",
+     "weight": 2
+    },
+    {
+     "term": "сэтгэл",
+     "weight": 1
+    },
+    {
+     "term": "зорилго",
+     "weight": 1
+    },
+    {
+     "term": "түүх",
+     "weight": 1
+    },
+    {
+     "term": "cgi",
+     "weight": 3
+    },
+    {
+     "term": "surreal",
+     "weight": 3
+    },
+    {
+     "term": "гайхамшиг",
+     "weight": 1
+    },
+    {
+     "term": "ирээдүй",
+     "weight": 1
+    }
+   ],
+   "questions": [
+    "энэ кино юуны тухай"
+   ],
+   "footage": {
+    "videos": [
+     3,
+     100
+    ],
+    "orientation": "horizontal",
+    "screen_recording": false
+   },
+   "default_seconds": [
+    35,
+    90
+   ]
+  }
+ }
+}

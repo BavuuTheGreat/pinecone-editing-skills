@@ -51,6 +51,8 @@ Finished videos land in `~/Desktop/ai edited reels/` (testimonials: `~/Desktop/a
 and `~/Downloads/ai-footages-edited-version/`). Upload them to Marketing Planner → Video review.
 Paste the reviewer's comments back to Claude for the fix round.
 
+The editing factory can notice your footage folder, propose a reel and wait for your yes: see [docs/content-factory/automation.md](docs/content-factory/automation.md).
+
 ## Themes
 
 | Theme | Status | Made by |
