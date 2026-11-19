@@ -38,7 +38,7 @@ LEX = {"pinequest": "painkvest", "software": "softver", "engineer": "injiner", "
        "bootcamp": "butkemp", "pinecone": "painkon", "api": "ei pi ai", "it": "ai ti", "ai": "ei ai",
        # as Mongolian speakers say them (episode 1: lower alignment scores on these words before this list)
        "academy": "akademi", "google": "guugl", "maps": "map", "map": "map", "higgsfield": "higsfild", "claude": "klaud", "app": "ap",
-       "event": "evend", "hall": "hool", "reel": "riil", "hello": "helloo", "guys": "gais"}
+       "event": "evend", "raw": "ro", "footage": "futej", "editing": "editin", "hall": "hool", "reel": "riil", "hello": "helloo", "guys": "gais"}
 LETTER = dict(zip("abcdefghijklmnopqrstuvwxyz", ["ei", "bi", "si", "di", "i", "ef", "ji", "eich", "ai", "jei", "kei", "el", "em", "en",
                                                   "ou", "pi", "kiu", "ar", "es", "ti", "yu", "vi", "dablyu", "eks", "uai", "zed"]))
 ONES = ["", "neg", "hoyor", "gurav", "dorov", "tav", "zurgaa", "doloo", "naim", "yes"]

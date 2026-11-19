@@ -337,7 +337,7 @@ def plan(job, base, pub, segs, total, end_card):
     if job.get("closer_ep"):
         props["closerEp"] = job["closer_ep"]
     if job.get("brand_moments"):
-        props["brands"] = [{"name": b["name"], "word": b.get("word", b["name"]), "color": b["color"], "logo": (f"{b['name']}_mark.png" if os.path.exists(os.path.join(pub, f"{b['name']}_mark.png")) else None), "from": m(b["at"][0]), "to": m(b["at"][1])} for b in job["brand_moments"]]
+        props["brands"] = [{"name": b["name"], "label": b.get("label"), "word": b.get("word", "" if b["name"] == "text" else b["name"]), "color": b["color"], "logo": (f"{b['name']}_mark.png" if os.path.exists(os.path.join(pub, f"{b['name']}_mark.png")) else None), "from": m(b["at"][0]), "to": m(b["at"][1]), **({"plain": True} if b.get("plain") else {})} for b in job["brand_moments"]]
     if job.get("closer"):
         # the closer is as long as it takes for the whole video to land on its target length (30 s max)
         props["closerFrames"] = max(132, min(210, round(job.get("target_seconds", 30.0) * FPS) - round(total * FPS)))
