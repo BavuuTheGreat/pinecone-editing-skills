@@ -111,6 +111,7 @@ python3 -m factory done <id> <output files...>   # record the finished files; th
 python3 -m factory review-result <id> approved|changes "<comment>"   # record the reviewer's answer
 python3 -m factory review [--date YYYY-MM-DD]   # write and print the daily review
 python3 -m factory loop --every 300     # run tick every 300 seconds (for a terminal or a scheduler)
+python3 -m factory serve --port 8765    # the board in a browser at http://localhost:8765, with the Yes / No buttons
 ```
 
 ### One reel, six steps

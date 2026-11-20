@@ -118,6 +118,12 @@ def cmd_loop(cfg: Config, a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_serve(cfg: Config, a: argparse.Namespace) -> int:
+    from . import web  # lazy: the board is optional
+    web.serve(cfg, a.port)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="factory", description="Editing factory")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -131,6 +137,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("result"); s.add_argument("comment", nargs="?", default="")
     s.set_defaults(fn=cmd_review_result)
     s = sub.add_parser("review"); s.add_argument("--date"); s.set_defaults(fn=cmd_review)
+    s = sub.add_parser("serve", help="the board in a browser, with the approve / reject buttons (localhost only)")
+    s.add_argument("--port", type=int, default=8765); s.set_defaults(fn=cmd_serve)
     s = sub.add_parser("loop"); s.add_argument("--every", type=float, default=300)
     s.add_argument("--max-runs", type=int, default=None, help=argparse.SUPPRESS)  # lets tests stop the loop
     s.set_defaults(fn=cmd_loop)
