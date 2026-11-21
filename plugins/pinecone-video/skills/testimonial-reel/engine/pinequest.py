@@ -113,6 +113,20 @@ def hook_motion(job):
     return job.get("hook_motion", "calm")
 
 
+def answer_tails(job, pieces):
+    """Review 2026-11-21 ("yriag ni duusgaad ydaj 1 second bolood daraagiin asuult garch ireh"): when he finishes an answer,
+    stay on him about 1 s before the next question card. The last piece before each card gets `tail` seconds of picture
+    with the sound faded out (room tone only, so the interviewer's next question is never heard). A piece's own "tail" wins;
+    job "answer_tail" sets the default (0 turns it off). Check the source: he must not start talking inside the tail."""
+    dflt, cards = float(job.get("answer_tail", 1.0)), job.get("cards", {})
+    out = [dict(p) for p in pieces]
+    for k, p in enumerate(out):
+        nxt = out[k + 1] if k + 1 < len(out) else None
+        if "tail" not in p and nxt and not nxt.get("join") and nxt["answer"] != p["answer"] and cards.get(nxt["answer"]):
+            p["tail"] = dflt
+    return out
+
+
 def plan(job, clips, pub):
     items, starts, t = [], {}, 0.0
     cards = job.get("cards", {})
@@ -378,7 +392,7 @@ def main():
     os.makedirs(pub, exist_ok=True)
     prep(job, base, pub)
     st = {"key": job.get("key", "PQ"), "source": P(base, job["source"]), "pieces": job["pieces"]}
-    clips = stages.cut(st, stages.resolve_pieces(st), pub)
+    clips = stages.cut(st, answer_tails(job, stages.resolve_pieces(st)), pub)
     b, caps, body_end = plan(job, clips, pub)
     pl = os.path.join(build, "plan.json")
     json.dump({"base": b, "caps": caps, "body_end": body_end, "card_sfx": card_sfx(job), "hook_motion": hook_motion(job), **({"music_style": job["music_style"]} if job.get("music_style") else {})}, open(pl, "w"), ensure_ascii=False, indent=1)
