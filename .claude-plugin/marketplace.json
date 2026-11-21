@@ -11,7 +11,7 @@
       "name": "pinecone-video",
       "source": "./plugins/pinecone-video",
       "description": "edit-reel (Editing station: pick a reel theme, get it edited in Pinecone's house style), testimonial-reel, reel-audit, ai-video-playbook, brand-motion, podcast-clipper, motion-studio and engineers-series skills tuned to Pinecone reel formats.",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "category": "productivity",
       "keywords": [
         "video",

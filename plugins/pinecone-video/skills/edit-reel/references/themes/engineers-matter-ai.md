@@ -88,6 +88,17 @@ One accent colour (Pinecone green). Nothing else glows, flashes or spins.
 | torch 2.5.1 + torchaudio (optional venv) | `MMS_FA` forced alignment of captions |
 Brand-pack items are optional here: `assets/pinecone_mark.svg` (top-right mark; skipped if missing), `assets/end_card_9x16.mp4`.
 
+## Clip edges and callouts (review 2026-11-19, episode 2)
+
+- **Clip edges.** In clip mode every clip starts 0.10-0.14 s before the first word and ends 0.12-0.16 s after the last. A 0.03-0.07 s lead
+  clips soft consonants. Speakers often finish a sentence quietly (10-15 dB under their normal level): look at the 20 ms energy after the
+  last loud word before setting `to`; the engine's "clip edges" printout only checks the 40 ms next to the edge. Episode 2's second clip
+  ended 0.35 s early and cut the end of the sentence.
+- **Number callouts are plain.** A `text` brand moment for a key number ("5–10 минут") uses the cream `#F2EBDC` and `"plain": true`:
+  the words only, no green and no colour wash (reviewer: "remove the color, just have it on the screen normally"). Colour washes stay
+  for company names (Claude, Higgsfield).
+- Do not pad a clip's tail to "be safe": 0.35 s of extra silence before a hard cut reads as dead air.
+
 ## Check
 - [ ] Intro: typing reads, ghost visible before Tab, solid after (the typing is silent); nothing overlaps the top 220 px except the ep tag and mark
 - [ ] First shot opens smoothly (no pop), face centred, no black frame

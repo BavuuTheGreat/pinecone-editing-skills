@@ -17,7 +17,8 @@ export type Stack = { from: number; to: number; kind: "wide" | "tall"; src?: str
 export type Fx = { t: number; kind: "blur" | "lift" | "shift"; dir: number };
 export type CamKey = { t: number; s: number; x: number }; // presenter-time seconds, scale, pan in px
 export type Cap = { from: number; to: number; text: string };
-export type Brand = { name: "claude" | "higgsfield"; logo?: string | null; from: number; to: number; color: string; word: string };
+export type Brand = { name: "claude" | "higgsfield" | "text"; label?: string; plain?: boolean; // plain: just the words, no colour wash over the picture
+  logo?: string | null; from: number; to: number; color: string; word: string };
 export type Chapter = { from: number; to: number; num: string; label: string };
 export type EngEpisodeProps = {
   presenter: string;
@@ -271,7 +272,7 @@ const CaptionText: React.FC<{ P: EngEpisodeProps; pf: number }> = ({ P, pf }) =>
         <style>{face}</style>
         <div style={{ display: "flex", gap: 13, whiteSpace: "nowrap", fontFamily: P.captionFont ? "GIPCap" : SANS, fontWeight: 600, fontSize: 47, lineHeight: 1, color: "#fff",
           filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(0,0,0,0.6))" }}>
-          {cap.text.split(" ").map((w, i) => { const b = (P.brands ?? []).find((x) => w.toLowerCase().startsWith(x.word.toLowerCase()) && t >= x.from - 0.05); return <span key={i} style={b ? { color: b.color } : undefined}>{w}</span>; })}
+          {cap.text.split(" ").map((w, i) => { const b = (P.brands ?? []).find((x) => x.word && w.toLowerCase().startsWith(x.word.toLowerCase()) && t >= x.from - 0.05); return <span key={i} style={b ? { color: b.color } : undefined}>{w}</span>; })}
         </div>
       </div>
     );
@@ -295,23 +296,23 @@ const BrandMoments: React.FC<{ brands?: Brand[]; pf: number }> = ({ brands, pf }
   return (
     <>
       {(brands ?? []).map((b, i) => {
-        const a = b.from - 0.05, z = b.to + (b.name === "claude" ? 0.02 : 0.3);
+        const a = b.from - 0.05, z = b.to + (b.name === "higgsfield" ? 0.3 : 0.02);
         if (t < a || t > z + 0.31) return null;
         const inP = interpolate(t, [a, a + 0.28], [0, 1], { ...clamp, easing: SETTLE });
-        const outP = interpolate(t, [z, z + (b.name === "claude" ? 0.12 : 0.3)], [1, 0], { ...clamp, easing: SMOOTH });
+        const outP = interpolate(t, [z, z + (b.name === "higgsfield" ? 0.3 : 0.12)], [1, 0], { ...clamp, easing: SMOOTH });
         const o = Math.min(inP, outP);
-        const claude = b.name === "claude";
+        const claude = b.name !== "higgsfield"; // claude + text callouts use the serif wordmark look
         return (
           <React.Fragment key={i}>
-            <AbsoluteFill style={{ opacity: o * 0.42, mixBlendMode: "normal", pointerEvents: "none",
-              background: `radial-gradient(ellipse 110% 60% at 50% 100%, ${b.color} 0%, rgba(0,0,0,0) 70%)` }} />
+            {b.plain ? null : <AbsoluteFill style={{ opacity: o * (b.name === "text" ? 0.22 : 0.42), mixBlendMode: "normal", pointerEvents: "none",
+              background: `radial-gradient(ellipse 110% 60% at 50% 100%, ${b.color} 0%, rgba(0,0,0,0) 70%)` }} />}
             <AbsoluteFill style={{ opacity: o * 0.5, pointerEvents: "none", background: "radial-gradient(ellipse 60% 14% at 50% 21%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)" }} />
             <div style={{ position: "absolute", left: 0, right: 0, top: 380, display: "flex", justifyContent: "center", opacity: o,
               transform: `translateY(${(1 - inP) * 26 + (1 - outP) * -14}px) scale(${0.94 + 0.06 * inP})`, filter: "drop-shadow(0 3px 16px rgba(0,0,0,0.45))" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 18, color: b.color }}>
                 {b.logo ? <Img src={staticFile(b.logo)} style={{ width: claude ? 92 : 84, height: claude ? 92 : 84, objectFit: "contain" }} /> : null}
-                <div style={{ fontFamily: claude ? SERIF : SANS, fontWeight: claude ? 400 : 800, fontSize: claude ? 84 : 70, letterSpacing: claude ? -1 : -1.5, lineHeight: 1 }}>
-                  {claude ? "Claude" : "Higgsfield"}
+                <div style={{ fontFamily: claude ? SERIF : SANS, fontWeight: claude ? 400 : 800, fontSize: b.name === "text" ? 104 : claude ? 84 : 70, letterSpacing: claude ? -1 : -1.5, lineHeight: 1 }}>
+                  {b.label ?? (claude ? "Claude" : "Higgsfield")}
                 </div>
               </div>
             </div>

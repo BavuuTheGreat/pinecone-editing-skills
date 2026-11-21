@@ -116,5 +116,43 @@
  },
  "_music_style": "optional: a second synthesized song so reels in a series don't all share one track. Omit for the original 122 BPM bed. bpm = tempo, key = transpose in semitones, seed = noise variation. Change the numbers per reel.",
  "_caption_style": "optional, only when needed: {\"baseline\": 1530} moves captions below a logo/print on the clothes; {\"shadow\": \"drop-shadow(0 2px 3px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(0,0,0,0.75))\"} for white or light clothes under the caption line.",
- "post_caption": "PineQuest S5-ийн <III байр / оролцогч>, <Баг> багийн гишүүн <Нэр>-ийн сэтгэгдэл ⭐️"
+ "post_caption": "PineQuest S5-ийн <III байр / оролцогч>, <Баг> багийн гишүүн <Нэр>-ийн сэтгэгдэл ⭐️",
+ "_long_answer_options": {
+  "_": "Optional. See 'Long-answer reels' in edit-reel/references/themes/pinequest-testimonial.md.",
+  "piece": {
+   "id": "a2",
+   "answer": "q1",
+   "start": 0,
+   "end": 0,
+   "join": true,
+   "level": [
+    0,
+    0
+   ]
+  },
+  "hook": {
+   "piece": "t0",
+   "seconds": 2.9,
+   "top": 800
+  },
+  "insert": {
+   "src": "team_clip.mp4",
+   "media": "video",
+   "layout": "phone",
+   "at": [
+    "a1",
+    0
+   ],
+   "until": [
+    "a1",
+    0
+   ]
+  },
+  "music": "music/<song>.mp3",
+  "music_opts": {
+   "start": 0,
+   "card_db": -7
+  },
+  "music_credit": "<Title> <Artist> (<site>), licence + URL"
+ }
 }

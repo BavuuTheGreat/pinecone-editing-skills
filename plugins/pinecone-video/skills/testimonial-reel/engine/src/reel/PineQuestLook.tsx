@@ -89,40 +89,65 @@ export type Insert = {
   seconds: number;
   src: string; // in public/
   media: "image" | "video";
-  layout: "framed" | "full";
+  layout: "framed" | "full" | "phone"; // phone: vertical 9:16 media (a team reel, an app recording) in a phone-shaped frame
   videoStart?: number; // seconds into a video src
+  pan?: number; // 0..3: direction of the slow pan inside the frame (set by the planner, alternates)
+  dimOut?: boolean; // runs to the answer's last frame: dims with the clip's fade into the next card instead of fading back to the speaker
+  cutOut?: boolean; // no fade-out: the next insert cross-fades in on top of this one
 };
 
 // Speaker audio keeps playing underneath (inserts are picture only).
+// Motion (review 2026-11-19: the pop-in was "too fast" and back-to-back inserts "cut each other off"):
+// the insert fades in over 10 frames while the frame settles from 0.95, holds, and fades out over 8 frames.
+// Inside the frame the picture pans slowly (Ken Burns): a push-in with a sideways drift, direction alternating
+// per insert (pan: 0..3), the same slow move the photo inserts in the first PineQuest reels had.
 export const InsertView: React.FC<{ ins: Insert }> = ({ ins }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const zoom = interpolate(frame, [0, ins.seconds * fps], [1, 1.06], { extrapolateRight: "clamp" });
-  const pop = easeOut(Math.min(1, frame / 8));
-  const popStyle: React.CSSProperties = {
-    transform: `scale(${0.82 + 0.18 * pop}) rotate(${(1 - pop) * -2.5}deg)`, opacity: Math.min(1, frame / 3),
-    filter: pop < 1 ? `blur(${(1 - pop) * 14}px)` : undefined,
-  };
+  const total = Math.max(1, Math.round(ins.seconds * fps));
+  const k = Math.min(1, frame / total);
+  const IN = 10, OUT = 8;
+  const pin = easeOut(Math.min(1, frame / IN));
+  const left = total - 1 - frame;
+  const dim = ins.dimOut && left < 6 ? 0.15 + 0.85 * easeOut(Math.max(0, left) / 6) : 1; // same curve as PQEdge "fade"
+  const fade = Math.min(1, frame / IN, ins.cutOut || ins.dimOut ? 1 : (total - frame) / OUT);
+  const dir = (ins.pan ?? 0) % 4;
+  const amt = ins.layout === "phone" ? 0.07 : 0.1;
+  const zoom = 1.02 + amt * k;
+  const dx = (dir === 0 ? -1 : dir === 1 ? 1 : dir === 2 ? -0.6 : 0.6) * 1.6 * (k - 0.5);
+  const dy = (dir < 2 ? -1 : 1) * 1.0 * (k - 0.5);
+  const panStyle: React.CSSProperties = { width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom}) translate(${dx}%, ${dy}%)` };
+  const frameStyle: React.CSSProperties = { transform: `scale(${0.95 + 0.05 * pin})` };
   const media =
     ins.media === "image" ? (
-      <Img src={staticFile(ins.src)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})` }} />
+      <Img src={staticFile(ins.src)} style={panStyle} />
     ) : (
-      <OffthreadVideo src={staticFile(ins.src)} muted startFrom={Math.round((ins.videoStart ?? 0) * fps)}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      <OffthreadVideo src={staticFile(ins.src)} muted startFrom={Math.round((ins.videoStart ?? 0) * fps)} style={panStyle} />
     );
   if (ins.layout === "full") {
     return (
-      <AbsoluteFill style={{ backgroundColor: "#000" }}>
-        <AbsoluteFill style={{ transform: `scale(${1.25 - 0.25 * pop})`, filter: pop < 1 ? `blur(${(1 - pop) * 20}px)` : undefined }}>{media}</AbsoluteFill>
+      <AbsoluteFill style={{ backgroundColor: "#000", opacity: fade, filter: dim < 1 ? `brightness(${dim.toFixed(2)})` : undefined }}>
+        <AbsoluteFill style={{ transform: `scale(${1.08 - 0.08 * pin})` }}>{media}</AbsoluteFill>
         <ChevronLogo />
       </AbsoluteFill>
     );
   }
+  if (ins.layout === "phone") {
+    // 9:16 frame above the caption line (bottom edge y 1206, captions sit at 1240-1310)
+    const W = 572, H = 1016;
+    return (
+      <AbsoluteFill style={{ ...GRID, backgroundPosition: `6px ${22 - frame * 0.6}px`, opacity: fade, filter: dim < 1 ? `brightness(${dim.toFixed(2)})` : undefined }}>
+        <ChevronLogo />
+        <div style={{ position: "absolute", left: (1080 - W) / 2, top: 190, width: W, height: H, overflow: "hidden", borderRadius: 34,
+          border: "3px solid rgba(255,255,255,0.16)", boxShadow: "0 30px 80px rgba(0,0,0,0.6)", backgroundColor: "#000", ...frameStyle }}>{media}</div>
+      </AbsoluteFill>
+    );
+  }
   return (
-    <AbsoluteFill style={GRID}>
+    <AbsoluteFill style={{ ...GRID, backgroundPosition: `6px ${22 - frame * 0.6}px`, opacity: fade, filter: dim < 1 ? `brightness(${dim.toFixed(2)})` : undefined }}>
       <ChevronLogo />
       <div style={{ position: "absolute", left: 38, top: 640, width: 1004, height: 564, overflow: "hidden", borderRadius: 6,
-        boxShadow: "0 24px 60px rgba(0,0,0,0.55)", ...popStyle }}>{media}</div>
+        boxShadow: "0 24px 60px rgba(0,0,0,0.55)", ...frameStyle }}>{media}</div>
     </AbsoluteFill>
   );
 };
@@ -140,12 +165,19 @@ const hash = (n: number) => {
   return s - Math.floor(s);
 };
 
-export const PQEdge: React.FC<{ len: number; inEdge: PQEdgeKind; outEdge: PQEdgeKind; zoom?: ZoomKey[]; children: React.ReactNode }> = ({
-  len, inEdge, outEdge, zoom, children,
+export const PQEdge: React.FC<{ len: number; inEdge: PQEdgeKind; outEdge: PQEdgeKind; zoom?: ZoomKey[]; drift?: number; children: React.ReactNode }> = ({
+  len, inEdge, outEdge, zoom, drift, children,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   let scale = 1, blur = 0, bright = 1, ty = 0, tx = 0;
+  // drift: slow camera move on a speaker clip (0.45 % push per second, at most 5 %), with a slight sideways pan
+  // whose direction alternates clip to clip. A locked-off 30 s take reads as static without it.
+  if (drift !== undefined) {
+    const d = Math.min(0.05, (frame / fps) * 0.0045);
+    scale *= 1.012 + d;
+    tx += (drift % 2 === 0 ? 1 : -1) * (d / 0.05) * 9 - (drift % 2 === 0 ? 4.5 : -4.5);
+  }
   // punch-in zoom keys (snap with ease-out over 5 frames)
   if (zoom && zoom.length) {
     let cur = { scale: 1, y: 0 }, prev = { scale: 1, y: 0 }, since = 999;
@@ -240,7 +272,10 @@ export const HookTitle: React.FC<{ hook: Hook }> = ({ hook }) => {
   let w = 0;
   return (
     <AbsoluteFill style={{ alignItems: "center" }}>
-      <AbsoluteFill style={{ background: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.25) 32%, transparent 50%)", opacity: 1 - outK }} />
+      {/* top headline: dark top gradient. Low headline (top >= 600, for a speaker whose face fills the top): a soft dark band behind the text */}
+      <AbsoluteFill style={{ background: (hook.top ?? 250) >= 600
+        ? `linear-gradient(transparent ${(((hook.top ?? 0) - 170) / 19.2).toFixed(1)}%, rgba(0,0,0,0.62) ${(((hook.top ?? 0) - 30) / 19.2).toFixed(1)}%, rgba(0,0,0,0.62) ${(((hook.top ?? 0) + 250) / 19.2).toFixed(1)}%, transparent ${(((hook.top ?? 0) + 400) / 19.2).toFixed(1)}%)`
+        : "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.25) 32%, transparent 50%)", opacity: 1 - outK }} />
       <div style={{ position: "absolute", top: hook.top ?? 250, left: 0, right: 0, textAlign: "center", opacity: (1 - outK) * fadeIn,
         transform: calm ? undefined : `scale(${1 + outK * 0.15})`, filter: !calm && outK ? `blur(${outK * 10}px)` : undefined }}>
         {hook.lines.map((ln, li) => (
