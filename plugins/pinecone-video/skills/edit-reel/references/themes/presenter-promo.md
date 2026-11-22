@@ -2,7 +2,7 @@
 
 A staff host on camera explains a program, deadline or offer, with list cards and a CTA.
 
-**Status:** Beta · **Made by:** `assemble.py` + `brand-motion` · **Audit:** 17 reels, median 8.9K organic, 0.25% (lowest like rate), 30-205 s, ~8 cuts/min
+**Status:** Beta · **Made by:** `assemble.py` + `brand-templates` · **Audit:** 17 reels, median 8.9K organic, 0.25% (lowest like rate), 30-205 s, ~8 cuts/min
 **Examples:** instagram.com/reel/DdYiEQok8oS (listicle), /reel/DdCpl1jTswR
 
 ## Signals

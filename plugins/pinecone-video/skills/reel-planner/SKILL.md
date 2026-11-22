@@ -1,11 +1,11 @@
 ---
-name: ai-video-playbook
-description: Plan and produce Pinecone Academy reels with AI - pick the format, split it into scenes, decide per scene whether it is filmed, generated (Higgsfield image/video), or templated (Remotion), write the prompts, and run the guardrails. Use when asked to "make a reel", "plan a video", "which scenes can AI make", "generate b-roll", or to remake a past reel with AI.
+name: reel-planner
+description: The planner for reels that are not plain edits. Plan and produce Pinecone Academy reels with AI - pick the format, split it into scenes, decide per scene whether it is filmed, generated (Higgsfield image/video), or templated (Remotion), write the prompts, and run the guardrails. Use when asked to "make a reel", "plan a video", "which scenes can AI make", "generate b-roll", or to remake a past reel with AI.
 argument-hint: "<brief or reel URL to remake>"
 allowed-tools: Bash, Read, Write, AskUserQuestion
 ---
 
-# AI video playbook - Pinecone reels
+# reel-planner - Pinecone reels with AI (renamed from ai-video-playbook)
 
 Rule of thumb from the Oct 2026 audit: **AI builds the world; real people tell the story.**
 Creator and event reels earn 61% of views. Never replace those people with AI.
@@ -26,7 +26,7 @@ For source, choose one of:
 | FILM | any real person: founder, staff host, students, creators, events | camera |
 | GEN-IMG | posters, backdrops, metaphor stills, CTA backgrounds | Higgsfield `generate_image` |
 | GEN-VID | surreal/CGI motion: Earth, data worlds, stone-head people, 3D characters | Higgsfield `generate_video` (image -> video for control) |
-| TEMPLATE | counters, list cards, kinetic titles, end cards, captions | `brand-motion` skill (Remotion) |
+| TEMPLATE | counters, list cards, kinetic titles, end cards, captions | `brand-templates` skill (Remotion) |
 | SCREEN | product UI, code, student projects | screen recording, then a TEMPLATE zoom |
 
 Hook (0-3 s) gets its own row. Every reel ends on a TEMPLATE end card with the CTA.
@@ -52,7 +52,7 @@ Never call `execute_preset` or `publish_*` without explicit approval.
 
 ## Step 4 - Assemble
 
-- Motion graphics and captions: `brand-motion` skill.
+- Motion graphics and captions: `brand-templates` skill.
 - Long podcast -> clips: `podcast-clipper` skill.
 - Full voiceover explainer cut in CapCut: the `capcut-editing-automation` skill (enable it in claude.ai).
 - Check pacing against the audit baseline: produced formats run at about 20 cuts/min, talk formats at 3-5.

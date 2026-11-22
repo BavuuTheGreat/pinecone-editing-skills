@@ -1,4 +1,4 @@
-"""One-time setup for the testimonial-reel skill. Safe to re-run. Works on macOS, Windows and Linux.
+"""One-time setup for the interview-reel skill. Safe to re-run. Works on macOS, Windows and Linux.
 
     python3 setup.py          (macOS / Linux)
     python3 setup.py --align  (optional: install the caption forced-alignment venv, ~0.5 GB)
@@ -127,7 +127,7 @@ def install_brand(src: str) -> None:
 def main() -> int:
     if "--align" in sys.argv:
         return install_aligner()
-    print(f"testimonial-reel setup ({OS})")
+    print(f"interview-reel setup ({OS})")
     missing = []
 
     if sys.version_info < (3, 10):

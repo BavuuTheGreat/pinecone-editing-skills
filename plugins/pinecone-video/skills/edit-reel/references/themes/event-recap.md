@@ -2,7 +2,7 @@
 
 Fast-cut film of a Pinecone event or partnership: stage, crowd, quick handheld interviews, co-brand.
 
-**Status:** Beta · **Made by:** `assemble.py` + `brand-motion` · **Audit:** 10 reels, median 10.0K organic, 1.20% (Oct), 55-190 s, ~18 cuts/min (best one: 46 cuts/min, 55 s, 126K)
+**Status:** Beta · **Made by:** `assemble.py` + `brand-templates` · **Audit:** 10 reels, median 10.0K organic, 1.20% (Oct), 55-190 s, ~18 cuts/min (best one: 46 cuts/min, 55 s, 126K)
 **Examples:** instagram.com/reel/Dc3WEeziWJ5, /reel/DciHlCSmyY4, /reel/DcS54TXCJsv
 
 ## Signals

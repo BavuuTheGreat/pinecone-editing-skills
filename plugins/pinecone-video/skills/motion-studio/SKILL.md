@@ -1,6 +1,6 @@
 ---
 name: motion-studio
-description: Make bespoke motion-graphics films rendered from code - launch reels, event teasers, UI loops, showreels and longer director-brief films. Each frame is drawn by window.seek(t) in headless Chromium with spring physics, cut to a beat grid, scored with synthesized or supplied music, and self-reviewed from contact sheets until every score is 8+. Use when asked for a launch video, teaser, motion ad, product reel, animated explainer or "make it look like this reference". For the fixed repeating Pinecone graphics (captions, list cards, end cards, counters) use brand-motion instead.
+description: Make bespoke motion-graphics films rendered from code - launch reels, event teasers, UI loops, showreels and longer director-brief films. Each frame is drawn by window.seek(t) in headless Chromium with spring physics, cut to a beat grid, scored with synthesized or supplied music, and self-reviewed from contact sheets until every score is 8+. Use when asked for a launch video, teaser, motion ad, product reel, animated explainer or "make it look like this reference". For the fixed repeating Pinecone graphics (captions, list cards, end cards, counters) use brand-templates instead.
 argument-hint: "<what film> [any of: URL, duration, formats, proof point, CTA, reference, music] - missing required inputs are asked for"
 allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 ---
@@ -75,7 +75,7 @@ things you would improve next. Keep one folder per brand or campaign, so later f
 
 ## Hard rules
 - Real product UI, logos and photos only. Never invent screens or fake metrics.
-- Never put a synthetic likeness of a real person into a film (see ai-video-playbook guardrails).
+- Never put a synthetic likeness of a real person into a film (see reel-planner guardrails).
 - API keys (e.g. ElevenLabs for voiceover) live in `.env`, never in prompts or source.
 - Music only from `synth.py` or a track whose rights the team holds.
 - A review image you have not actually Read does not count as reviewed.

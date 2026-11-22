@@ -10,8 +10,8 @@ words, then a typed "Ghost Text" title as the closer. Captions in the Pinecone s
 |---|---|
 | Skill entry point (read first): steps, checklist, history of every review round | `engineers-series/SKILL.md` |
 | Theme card: the style rulebook (length, structure, captions, music, colours, checklist) | `edit-reel/references/themes/engineers-matter-ai.md` |
-| Template job (every key explained) | `testimonial-reel/engine/batches/engineers/_example.json` |
-| Renderer | `testimonial-reel/engine/engineers.py` (pipeline), `src/eng/*` (Remotion), `reelpipe/eng_music.py` (sound) |
+| Template job (every key explained) | `interview-reel/engine/batches/engineers/_example.json` |
+| Renderer | `interview-reel/engine/engineers.py` (pipeline), `src/eng/*` (Remotion), `reelpipe/eng_music.py` (sound) |
 | Motion catalog (curtain, scramble, split-flap) and the reviewer's reference reel analysis | `engineers-series/animations/README.md`, `engineers-series/references/reference-reel-analysis.md` |
 
 ## Try it (about 30 min the first time)
@@ -22,13 +22,13 @@ words, then a typed "Ghost Text" title as the closer. Captions in the Pinecone s
    /plugin install pinecone-video@pinecone-editing-skills
    ```
 2. Say `set up the editing station` and wait for **Ready** (python, numpy, node, ffmpeg, Remotion).
-3. Optional but recommended for exact caption timing: `python3 testimonial-reel/scripts/setup.py --align`
+3. Optional but recommended for exact caption timing: `python3 interview-reel/scripts/setup.py --align`
    (about 0.5 GB venv plus a 1.2 GB model).
 4. Say: `make an Engineers matter more with AI episode from <presenter take> and <screen recording>`.
    Claude asks for what it needs (presenter name and role spelled exactly, which sentence each screen belongs to)
    and builds the job from `_example.json`.
 
-Or by hand, from `plugins/pinecone-video/skills/testimonial-reel/engine/`:
+Or by hand, from `plugins/pinecone-video/skills/interview-reel/engine/`:
 `python3 -I engineers.py <job.json> --plan` (shows the cut and the length) then without `--plan` to render.
 Other flags: `--align` (caption timing), `--remix` (sound only), `--intro` (standalone title).
 

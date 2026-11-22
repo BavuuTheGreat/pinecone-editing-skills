@@ -1,5 +1,5 @@
 {
-  "name": "pinecone-testimonial-reel",
+  "name": "pinecone-interview-reel",
   "private": true,
   "version": "1.0.0",
   "description": "Automated testimonial reel editor (Remotion renderer + Python pipeline)",

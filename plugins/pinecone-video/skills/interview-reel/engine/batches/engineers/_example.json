@@ -155,7 +155,7 @@
       "tone": "pink"
     }
   ],
-  "_caption_y": "caption bottom edge in px (1620 = bottom of the screen). Captions use the testimonial-reel style: GIP (brand pack) white, no box, hard cut on/off",
+  "_caption_y": "caption bottom edge in px (1620 = bottom of the screen). Captions use the interview-reel style: GIP (brand pack) white, no box, hard cut on/off",
   "intro_meta": false,
   "_intro_meta": "false (default) = the intro and sign-off show only the title. true = also the EP tag and the pinecone mark + wordmark top row (earlier versions).",
   "chapter_style": "pill",
@@ -165,7 +165,7 @@
   "show_chapters": false,
   "_show_chapters": "false (default): no chapter labels on screen. true: a plate callout (split look) or a pill (cards look) at each chapter start from `chapters`.",
   "caption_style": "gip",
-  "_caption_style": "plate (default) = white Tinos serif on a tight black plate like the reference reel; gip = the testimonial-reel caption (brand-pack font, no box)",
+  "_caption_style": "plate (default) = white Tinos serif on a tight black plate like the reference reel; gip = the interview-reel caption (brand-pack font, no box)",
   "music_file": "music/<track>.m4a",
   "music_start": 0,
   "music_credit": "<title> by <artist>, <url>",

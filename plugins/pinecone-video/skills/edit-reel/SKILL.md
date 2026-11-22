@@ -16,16 +16,16 @@ already posts.
 
 | Theme | Card (in `references/`) | Made by | Status |
 |---|---|---|---|
-| Testimonial / seated interview | `themes/testimonial.md` | `testimonial-reel` skill | **Ready** (review-approved) |
-| PineQuest impression (participant / judge) | `themes/pinequest-testimonial.md` | `testimonial-reel/engine/pinequest.py` | **Ready** (review-approved) |
-| Engineers matter more with AI (series) | `themes/engineers-matter-ai.md` | `testimonial-reel/engine/engineers.py` | **Beta** (episode 1 awaiting review) |
+| Testimonial / seated interview | `themes/testimonial.md` | `interview-reel` skill | **Ready** (review-approved) |
+| PineQuest impression (participant / judge) | `themes/pinequest-testimonial.md` | `interview-reel/engine/pinequest.py` | **Ready** (review-approved) |
+| Engineers matter more with AI (series) | `themes/engineers-matter-ai.md` | `interview-reel/engine/engineers.py` | **Beta** (episode 1 awaiting review) |
 | Podcast clip | `themes/podcast-clip.md` | `podcast-clipper` skill | **Ready** |
 | Motion teaser | `themes/motion-teaser.md` | `motion-studio` skill | **Ready** |
-| Event recap | `themes/event-recap.md` | `scripts/assemble.py` + `brand-motion` | Beta |
-| Presenter / program promo | `themes/presenter-promo.md` | `scripts/assemble.py` + `brand-motion` | Beta |
+| Event recap | `themes/event-recap.md` | `scripts/assemble.py` + `brand-templates` | Beta |
+| Presenter / program promo | `themes/presenter-promo.md` | `scripts/assemble.py` + `brand-templates` | Beta |
 | Creator collab | `themes/creator-collab.md` | `scripts/assemble.py` | Beta |
 | Office trend | `themes/office-trend.md` | `scripts/assemble.py` | Beta |
-| Cinematic brand film | `themes/brand-film.md` | `ai-video-playbook` + `motion-studio` | Plan only |
+| Cinematic brand film | `themes/brand-film.md` | `reel-planner` + `motion-studio` | Plan only |
 
 **Ready** = renders the approved style unattended. **Beta** = Claude follows the card with the general
 assembler; the first reels of each beta theme go through review before the card is called Ready.
@@ -34,7 +34,7 @@ assembler; the first reels of each beta theme go through review before the card 
 ## 0. Setup (once per computer)
 
 ```bash
-python3 "<testimonial-reel skill dir>/scripts/setup.py"     # Windows: py
+python3 "<interview-reel skill dir>/scripts/setup.py"     # Windows: py
 ```
 
 It checks python, numpy, node and ffmpeg (prints the install command for this OS) and installs the
@@ -63,14 +63,14 @@ required and the footage doesn't answer (names spelled exactly, event name, CTAâ
   PineQuest impression: follow the card's recipe (job file + `pinequest.py`).
   Engineers matter more with AI: follow the card's recipe (job file + `engineers.py`); it has its own smooth-transition rules.
 - **Beta themes:** follow the card's recipe:
-  1. Transcribe if the card has speech captions (`../testimonial-reel/references/transcription.md`).
+  1. Transcribe if the card has speech captions (`../interview-reel/references/transcription.md`).
   2. Write `edl.json` (format in `scripts/assemble.py`), picking clips by the card's structure.
   3. `python3 -I scripts/assemble.py cut edl.json`. Check cuts/min against the card's pace range.
-  4. Graphics and captions with `brand-motion` (`WordCaptions` with `videoSrc` = `cut.mp4`, plus
+  4. Graphics and captions with `brand-templates` (`WordCaptions` with `videoSrc` = `cut.mp4`, plus
      `ListCard` / `KineticTitle` / `Counter10K` where the card calls for them). Set `"captioned"` in
      `edl.json` to that render.
   5. `python3 -I scripts/assemble.py finish edl.json`.
-- **Plan only:** run `ai-video-playbook` steps 1-2 and hand back the shot list.
+- **Plan only:** run `reel-planner` steps 1-2 and hand back the shot list.
 
 Everything follows `references/house-style.md` (format, loudness, captions, end card, file names).
 
@@ -80,7 +80,7 @@ Per reel: one still per section and the last frame before the end card, stacked 
 Check the card's checklist and the house-style checklist. Deliver to `~/Desktop/ai edited reels/`
 (testimonials keep their own folders), then tell the member to upload to Marketing Planner â†’ Video review.
 
-Reviewer comments: `../testimonial-reel/references/review-round.md` applies to every theme.
+Reviewer comments: `../interview-reel/references/review-round.md` applies to every theme.
 
 ## 5. Refresh themes (Editing manager)
 

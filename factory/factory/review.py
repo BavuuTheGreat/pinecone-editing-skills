@@ -12,7 +12,7 @@ CLOSED = ("done", "rejected")
 EMPTY = "Nothing today."
 GIT_GROUPS = [  # order matters: the engine folder sits inside the skills folder, so it is checked first
     ("plugins/pinecone-video/skills/edit-reel/references/themes/", "Themes"),
-    ("plugins/pinecone-video/skills/testimonial-reel/engine/", "Engine"),
+    ("plugins/pinecone-video/skills/interview-reel/engine/", "Engine"),
     ("plugins/pinecone-video/skills/", "Skills"),
     ("factory/", "Factory"),
     ("assets/", "Assets"),
