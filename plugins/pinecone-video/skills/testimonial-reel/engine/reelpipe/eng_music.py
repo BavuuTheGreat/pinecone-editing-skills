@@ -174,7 +174,7 @@ if EXT:
     D = int(max(0.0, t_p0 - 0.2) * 1000)
     L = total - max(0.0, t_p0 - 0.2)
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(EXT.get("start", 0)), "-t", f"{L:.2f}", "-i", EXT["file"], "-af",
-                    f"aresample=48000,aformat=channel_layouts=stereo,loudnorm=I=-26:TP=-3:LRA=7,aresample=48000,afade=t=in:st=0:d={plan.get("bed_fade_in", 2.4)},afade=t=out:st={max(0.0, L - 3.0):.2f}:d=3.0,adelay={D}|{D},{swell}apad=whole_dur={total + 2:.2f}",
+                    f"aresample=48000,aformat=channel_layouts=stereo,loudnorm=I=-26:TP=-3:LRA=7,aresample=48000,afade=t=in:st=0:d={plan.get('bed_fade_in', 2.4)},afade=t=out:st={max(0.0, L - 3.0):.2f}:d=3.0,adelay={D}|{D},{swell}apad=whole_dur={total + 2:.2f}",
                     os.path.join(out, "bed.wav")], check=True)
 
 # ---------------- sfx: tonal only, a handful of events ----------------
