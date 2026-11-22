@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main, pinequest-long-answer, factory-automation]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ENGINE: plugins/pinecone-video/skills/testimonial-reel/engine
+
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy
+      - name: Compile every engine python file
+        run: |
+          find "$ENGINE" -name node_modules -prune -o -name '*.py' -print0 | xargs -0 python -m py_compile
+      - name: Engine unit tests (pure functions, no ffmpeg or footage)
+        working-directory: ${{ env.ENGINE }}
+        run: python -m unittest discover -s tests -v
+
+  manifests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_manifests.py
+      - run: python -m unittest discover -s scripts -v
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks scans history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Bandit (fails on medium severity and above)
+        run: |
+          pip install bandit
+          bandit -r "$ENGINE/pinequest.py" "$ENGINE/engineers.py" "$ENGINE/run.py" "$ENGINE/new_batch.py" "$ENGINE/reelpipe" -ll
+      - name: Secret scan (gitleaks, free for user-owned repos)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
