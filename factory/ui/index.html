@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="factory-token" content="__FACTORY_TOKEN__">
+<meta name="color-scheme" content="dark light">
+<title>Editing factory</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="/ui/app.css">
+<script src="/ui/app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="eyebrow">Pinecone Academy · Editing</span><b>Editing factory</b></div>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+    <div class="appear">
+      <span class="eyebrow">Appearance</span>
+      <div class="seg" role="group" aria-label="Appearance" id="appear"></div>
+    </div>
+  </aside>
+  <div class="stage">
+    <header class="top">
+      <div class="crumb" id="crumb"></div>
+      <button class="btn" id="tick" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M5 3.5v9l7-4.5z"/></svg><span>Run one step</span></button>
+    </header>
+    <main class="page" id="view"></main>
+  </div>
+</div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<dialog id="dlg"></dialog>
+<noscript>This console needs JavaScript.</noscript>
+</body>
+</html>
