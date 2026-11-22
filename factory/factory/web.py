@@ -62,8 +62,8 @@ def _decide(cfg: Config, reel_id: str, decision: str, comment: str) -> tuple[int
         reel = state.load(cfg, reel_id)
     except state.UnknownReel:
         return 404, "That reel does not exist any more."
-    if reel["status"] != "proposed":
-        return 409, f"{reel['name']} is '{reel['status']}', so there is nothing to decide."
+    if (why := approval.refusal(reel)):
+        return 409, why
     if decision == "approve":
         approval.approve(cfg, reel, comment, by="dashboard")
         return 200, f"Approved: {reel['name']}. The next step picks it up."
@@ -265,8 +265,8 @@ def assets_model(cfg: Config) -> dict:
 
 
 def run_tick(cfg: Config) -> list[str]:
-    with WRITE_LOCK:
-        return tick_mod.tick(cfg)
+    """No in-process lock: a step can run for hours. tick() holds its own cross-process lock and raises TickBusy."""
+    return tick_mod.tick(cfg)
 
 
 # ---------------------------------------------------------------- http
@@ -288,6 +288,7 @@ def _origin_ok(value: str | None) -> bool:
 def make_handler(cfg: Config, token: str):
     class H(BaseHTTPRequestHandler):
         server_version = "FactoryUI"
+        timeout = 30  # a slow or short request body must not pin a thread forever
 
         def _send(self, code: int, body: bytes, ctype: str) -> None:
             self.send_response(code)
@@ -388,7 +389,10 @@ def make_handler(cfg: Config, token: str):
                     with WRITE_LOCK:
                         code, msg = _record_review(cfg, text("id"), text("result"), text("comment"))
                 elif path == "/api/tick":
-                    log = run_tick(cfg)
+                    try:
+                        log = run_tick(cfg)
+                    except tick_mod.TickBusy:
+                        return self._error(409, "A step is already running. Try again when it finishes.")
                     return self._json(200, {"ok": True, "log": log, "message": "; ".join(log) or "Nothing changed."})
                 else:
                     return self._error(404, "Not found")

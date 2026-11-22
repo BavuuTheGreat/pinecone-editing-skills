@@ -35,6 +35,64 @@ def make_propose() -> types.ModuleType:
     return m
 
 
+class TickGateTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cfg = Config(home=Path(self.tmp.name) / "home", repo=Path(self.tmp.name) / "repo", transcriber="manual")
+        self.cfg.ensure_dirs()
+        for name, mod in (("detect", make_detect()), ("propose", make_propose())):
+            for p in (mock.patch.dict(sys.modules, {f"factory.{name}": mod}), mock.patch.object(factory, name, mod, create=True)):
+                p.start()
+                self.addCleanup(p.stop)
+
+    def test_early_approval_cannot_pre_empt_the_proposal(self) -> None:
+        r = state.new_record("R", "/in", "r")
+        r["status"] = "detecting"
+        state.save(self.cfg, r)
+        approval._decide(self.cfg, r, "approved", "too early", None)  # file written while detecting
+        for _ in range(4):
+            tick.tick(self.cfg)
+        got = state.load(self.cfg, "r")
+        self.assertEqual(got["status"], "proposed")
+        self.assertEqual(got["approval"]["state"], "pending")
+        self.assertFalse((self.cfg.reel_dir("r") / "approval.json").exists())
+
+    def test_proposal_write_removes_an_old_decision(self) -> None:
+        r = state.new_record("R", "/in", "r")
+        r["status"] = "proposed"
+        state.save(self.cfg, r)
+        approval._decide(self.cfg, r, "approved", "", None)
+        tick.tick(self.cfg)
+        self.assertFalse((self.cfg.reel_dir("r") / "approval.json").exists())
+        self.assertTrue(state.load(self.cfg, "r")["proposal"]["path"])
+
+    def test_tick_refuses_while_another_tick_runs(self) -> None:
+        import fcntl
+        with open(self.cfg.tick_lock, "w") as fh:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            with self.assertRaises(tick.TickBusy):
+                tick.tick(self.cfg)
+        tick.tick(self.cfg)  # released: runs fine
+
+    def test_lock_is_released_after_a_crash_inside_tick(self) -> None:
+        with mock.patch.object(tick.inbox, "scan", side_effect=RuntimeError("x")):
+            with self.assertRaises(RuntimeError):
+                tick.tick(self.cfg)
+        tick.tick(self.cfg)
+
+    def test_reel_is_reloaded_from_disk_before_its_step(self) -> None:
+        r = state.new_record("R", "/nonexistent", "r")
+        state.save(self.cfg, r)
+        stale = state.load(self.cfg, "r")  # a snapshot that says "new"
+        r["status"] = "done"
+        state.save(self.cfg, r)
+        with mock.patch.object(state, "list_reels", return_value=[stale]):
+            tick.tick(self.cfg)
+        got = state.load(self.cfg, "r")
+        self.assertEqual((got["status"], got["needs"]), ("done", []))
+
+
 class TickTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()

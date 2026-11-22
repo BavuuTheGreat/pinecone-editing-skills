@@ -32,6 +32,7 @@ class Base(unittest.TestCase):
         r = state.new_record(f"Reel {PAYLOAD}", "/in", "r-one")
         r["status"] = "proposed"
         r["approval"]["state"] = "pending"
+        r["proposal"]["path"] = "/x/proposal.md"
         r["note"]["name"] = PAYLOAD
         r["needs"] = [PAYLOAD]
         r["review"]["comments"] = [PAYLOAD]

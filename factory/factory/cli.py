@@ -53,13 +53,21 @@ def cmd_show(cfg: Config, a: argparse.Namespace) -> int:
 
 
 def cmd_approve(cfg: Config, a: argparse.Namespace) -> int:
-    approval.approve(cfg, state.load(cfg, a.id), " ".join(a.comment))
+    reel = state.load(cfg, a.id)
+    if (why := approval.refusal(reel)):
+        print(why, file=sys.stderr)
+        return 1
+    approval.approve(cfg, reel, " ".join(a.comment))
     print(f"{a.id}: approved (the next tick moves it on)")
     return 0
 
 
 def cmd_reject(cfg: Config, a: argparse.Namespace) -> int:
-    approval.reject(cfg, state.load(cfg, a.id), " ".join(a.comment))
+    reel = state.load(cfg, a.id)
+    if (why := approval.refusal(reel)):
+        print(why, file=sys.stderr)
+        return 1
+    approval.reject(cfg, reel, " ".join(a.comment))
     print(f"{a.id}: rejected")
     return 0
 
@@ -102,7 +110,12 @@ def cmd_review(cfg: Config, a: argparse.Namespace) -> int:
 
 
 def cmd_tick(cfg: Config, a: argparse.Namespace) -> int:
-    for line in tick_mod.tick(cfg) or ["nothing changed"]:
+    try:
+        log = tick_mod.tick(cfg)
+    except tick_mod.TickBusy:
+        print("a step is already running", file=sys.stderr)
+        return 1
+    for line in log or ["nothing changed"]:
         print(line)
     return 0
 

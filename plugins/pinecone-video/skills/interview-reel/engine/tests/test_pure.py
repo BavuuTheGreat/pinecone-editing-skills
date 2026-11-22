@@ -5,6 +5,7 @@ Run from the engine folder:  python3 -m unittest discover -s tests -v
 import os
 import sys
 import unittest
+from unittest import mock
 
 ENGINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ENGINE)
@@ -63,6 +64,25 @@ class AnswerTails(unittest.TestCase):
         self.assertNotIn("tail", pcs[0])
 
 
+    def test_no_tail_on_the_hook_piece(self):
+        job = {**self.JOB, "hook": {"piece": "h"}}
+        pcs = [piece("h", "hook"), piece("p1", "a2")]
+        self.assertNotIn("tail", pinequest.answer_tails(job, pcs)[0])
+        pcs = [piece("h", "a1"), piece("p1", "a2")]  # hook id alone is enough
+        self.assertNotIn("tail", pinequest.answer_tails(job, pcs)[0])
+
+
+class PlanCaptions(unittest.TestCase):
+    def test_caption_in_the_silent_tail_is_not_matched_to_the_piece(self):
+        job = {"cards": {}, "captions": [[1.0, 1.5, "hello"], [5.5, 6.0, "next"]]}
+        clips = [{"id": "p1", "answer": "a1", "src": "1.mp4", "start": 0.0, "end": 5.0, "seconds": 6.0, "tail": 1.0},
+                 {"id": "p2", "answer": "a2", "src": "2.mp4", "start": 5.2, "end": 9.0, "seconds": 3.8}]
+        with mock.patch.object(media, "duration", return_value=3.0):
+            _, caps, _ = pinequest.plan(job, clips, "/nowhere")
+        nxt = next(c for c in caps if c["text"] == "next")
+        self.assertAlmostEqual(nxt["from"], 6.3, places=2)  # in p2 (starts at 6.0 on the reel), not in p1's tail
+
+
 class JobDefaults(unittest.TestCase):
     def test_card_typing_default_off(self):
         self.assertIs(pinequest.card_typing({}), False)
@@ -114,6 +134,36 @@ class Stages(unittest.TestCase):
     def test_resolve_pieces_passes_explicit_times_through(self):
         st = {"pieces": [{"id": "p1", "answer": "a1", "start": 1.0, "end": 2.0}]}
         self.assertEqual(stages.resolve_pieces(st), st["pieces"])
+
+    def test_resolve_pieces_word_times_keep_tail_join_level(self):
+        st = {"source": "x.mp4", "pieces": [{"id": "p1", "answer": "a1", "word_start": 2.0, "word_end": 3.0, "lo": 1.0,
+                                              "hi": 5.0, "tail": 0.5, "join": True, "level": [1.0, 4.0]}]}
+        with mock.patch.object(media, "pcm", return_value=None), mock.patch.object(media, "quietest", side_effect=[1.9, 3.1]):
+            out = stages.resolve_pieces(st)[0]
+        self.assertEqual(out, {"id": "p1", "answer": "a1", "start": 1.9, "end": 3.1, "tail": 0.5, "join": True, "level": [1.0, 4.0]})
+
+    def _cut(self, piece_, src_dur):
+        calls = []
+        st = {"key": "s", "source": "src.mp4"}
+        with mock.patch.object(media, "run", side_effect=lambda a: calls.append(a)), \
+                mock.patch.object(media, "lufs_file", return_value=-20.0), \
+                mock.patch.object(media, "duration", return_value=src_dur), \
+                mock.patch.object(os.path, "exists", return_value=False):
+            return stages.cut(st, [piece_], "/pub")[0], calls
+
+    def test_cut_cache_name_encodes_both_level_ends(self):
+        a, _ = self._cut({"id": "p", "answer": "a", "start": 1.0, "end": 3.0, "level": [1.0, 4.0]}, 100)
+        b, _ = self._cut({"id": "p", "answer": "a", "start": 1.0, "end": 3.0, "level": [1.0, 6.0]}, 100)
+        self.assertNotEqual(a["src"], b["src"])
+
+    def test_cut_tail_is_clamped_to_the_source(self):
+        c, calls = self._cut({"id": "p", "answer": "a", "start": 1.0, "end": 3.0, "tail": 1.0}, 3.4)
+        self.assertLessEqual(c["seconds"], 2.4 + 1e-6)
+        self.assertGreater(c["seconds"], 2.0)
+        c, _ = self._cut({"id": "p", "answer": "a", "start": 1.0, "end": 3.0, "tail": 1.0}, 3.0)
+        self.assertEqual(c["seconds"], 2.0)
+        c, _ = self._cut({"id": "p", "answer": "a", "start": 1.0, "end": 3.0, "tail": 1.0}, 50)
+        self.assertEqual(c["seconds"], 3.0)
 
     def test_props_adds_one_card_per_answer_and_outro(self):
         batch = {"cards": {"a1": {"text": "Q", "seconds": 2.0, "sfx": False}}, "end_card": "/x/end.mp4",

@@ -48,6 +48,10 @@ class Config:
     def lock(self) -> Path:
         return self.home / "factory.lock"
 
+    @property
+    def tick_lock(self) -> Path:
+        return self.home / "tick.lock"
+
     def reel_dir(self, reel_id: str) -> Path:
         # A reel id is a folder name: no "..", no slash, no dot. Ids from the network or the command line must stay inside state/.
         if not isinstance(reel_id, str) or not REEL_ID.fullmatch(reel_id):

@@ -46,9 +46,38 @@ class CliTest(unittest.TestCase):
                      ["review-result", "zzz", "approved"]):
             self.assertEqual(self.run_cli(*argv)[0], 2, argv)
 
+    def _proposed(self) -> None:
+        r = state.load(self.cfg, "r-one")
+        r.update(status="proposed")
+        r["approval"]["state"] = "pending"
+        r["proposal"]["path"] = "/x/proposal.md"
+        state.save(self.cfg, r)
+
+    def test_approve_reject_refused_unless_a_proposal_waits(self) -> None:
+        for argv in (("approve", "r-one"), ("reject", "r-one", "no")):
+            code, _, err = self.run_cli(*argv)  # status is "new"
+            self.assertEqual(code, 1, argv)
+            self.assertIn("nothing to decide", err)
+            self.assertFalse((self.cfg.reel_dir("r-one") / "approval.json").exists())
+        r = state.load(self.cfg, "r-one")  # proposed, but the tick has not written proposal.md yet
+        r["status"] = "proposed"
+        state.save(self.cfg, r)
+        self.assertEqual(self.run_cli("approve", "r-one")[0], 1)
+        self.assertFalse((self.cfg.reel_dir("r-one") / "approval.json").exists())
+
+    def test_tick_reports_a_running_step(self) -> None:
+        import fcntl
+        self.cfg.ensure_dirs()
+        with open(self.cfg.tick_lock, "w") as fh:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            code, out, err = self.run_cli("tick")
+        self.assertEqual(code, 1)
+        self.assertIn("already running", out + err)
+
     def test_approve_reject_write_decision(self) -> None:
+        self._proposed()
         self.assertEqual(self.run_cli("approve", "r-one", "good")[0], 0)
-        self.assertEqual(state.load(self.cfg, "r-one")["approval"]["state"], "none")  # tick applies it
+        self.assertEqual(state.load(self.cfg, "r-one")["approval"]["state"], "pending")  # tick applies it
         import json
         d = json.loads((self.cfg.reel_dir("r-one") / "approval.json").read_text())
         self.assertEqual((d["state"], d["comment"]), ("approved", "good"))

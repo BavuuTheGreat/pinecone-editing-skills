@@ -2,6 +2,7 @@ import json
 import tempfile
 import threading
 import unittest
+from unittest import mock
 import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
@@ -23,6 +24,7 @@ class WebTest(unittest.TestCase):
         r = state.new_record("Reel <b>One</b>", "/in", "r-one")
         r["status"] = "proposed"
         r["approval"]["state"] = "pending"
+        r["proposal"]["path"] = "/x/proposal.md"
         r["detection"] = {"theme": "pinequest-testimonial", "confidence": 0.52, "scores": {"podcast-clip": 0.1}, "evidence": ["'pinequest' x1"]}
         r["transcript"] = {"path": "/x", "source": "manual", "trust": "high", "text": "SECRET WORDS"}
         r["files"] = [{"path": "/footage/clip.mp4", "kind": "video", "seconds": 12.5}]
@@ -70,6 +72,42 @@ class WebTest(unittest.TestCase):
         r["status"] = "editing"
         state.save(self.cfg, r)
         self.assertIn("nothing to decide", web.decide(self.cfg, "r-one", "approve", ""))
+
+    def test_decide_refused_before_the_proposal_exists(self) -> None:
+        r = state.load(self.cfg, "r-one")
+        r["proposal"]["path"] = ""  # tick _detecting sets proposed one tick before proposal.md is written
+        r["approval"]["state"] = "none"
+        state.save(self.cfg, r)
+        self.assertIn("nothing to decide", web.decide(self.cfg, "r-one", "approve", ""))
+        self.assertFalse((self.cfg.reel_dir("r-one") / "approval.json").exists())
+        self.assertEqual(self.call("POST", "/api/decide", {"id": "r-one", "decision": "approve"})[0], 409)
+        self.assertEqual(self.call("POST", "/api/decide", {"id": "r-one", "decision": "reject", "comment": "x"})[0], 409)
+
+    def test_tick_endpoint_conflict_while_a_step_runs(self) -> None:
+        import fcntl
+        self.cfg.ensure_dirs()
+        with open(self.cfg.tick_lock, "w") as fh:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            code, out = self.jcall("POST", "/api/tick", {})
+            self.assertEqual(code, 409)
+            self.assertIn("already running", out["error"])
+            # decisions are not blocked by a running step
+            self.assertEqual(self.call("POST", "/api/decide", {"id": "r-one", "decision": "approve"})[0], 200)
+
+    def test_run_tick_does_not_hold_the_write_lock(self) -> None:
+        seen = []
+        def fake_tick(cfg, *a, **k):
+            got = web.WRITE_LOCK.acquire(blocking=False)
+            seen.append(got)
+            if got:
+                web.WRITE_LOCK.release()
+            return []
+        with mock.patch.object(web.tick_mod, "tick", fake_tick):
+            web.run_tick(self.cfg)
+        self.assertEqual(seen, [True])
+
+    def test_handler_has_a_socket_timeout(self) -> None:
+        self.assertEqual(web.make_handler(self.cfg, "t").timeout, 30)
 
     # ---- reads
     def test_reels_list_and_detail(self) -> None:
