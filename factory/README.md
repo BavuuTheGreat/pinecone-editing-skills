@@ -111,7 +111,7 @@ python3 -m factory done <id> <output files...>   # record the finished files; th
 python3 -m factory review-result <id> approved|changes "<comment>"   # record the reviewer's answer
 python3 -m factory review [--date YYYY-MM-DD]   # write and print the daily review
 python3 -m factory loop --every 300     # run tick every 300 seconds (for a terminal or a scheduler)
-python3 -m factory serve --port 8765    # the board in a browser at http://localhost:8765, with the Yes / No buttons
+python3 -m factory serve --port 8765    # the console in a browser at http://localhost:8765 (see Dashboard)
 ```
 
 ### One reel, six steps
@@ -127,6 +127,47 @@ python3 -m factory serve --port 8765    # the board in a browser at http://local
 6. Upload the reel to review in the Marketing Planner as before. Record the answer with
    `python3 -m factory review-result <id> approved "<comment>"` (the reel becomes `done`) or `changes "<comment>"`
    (the next `tick` writes a new brief that includes the comments).
+
+## Dashboard
+
+`python3 -m factory serve [--port 8765]` opens a console at `http://localhost:8765`. It follows the Pinecone Design admin
+rules: dark and light themes (System / Dark / Light in the sidebar), a 4-px grid, English labels, one blue button per
+screen, a skeleton, empty and error state on every page, and a toast for every action. Pages, each with its own URL so
+a reload or a pasted link opens the same screen: **Reels** (list on the left, the open reel on the right; filters in the
+URL as `?lane=` and `?theme=`), **Daily review**, **Agents** (the role cards and which reels each is working on),
+**Themes** (read-only, from `themes.json`) and **Assets** (licence and credit line, downloaded or not). The top-right
+**Run one step** button runs `tick` once. On a reel waiting for you, **Approve reel** is the one blue button and
+**Reject reel** asks for a reason first. On a reel in review, **Record result** takes Approved or Changes plus a comment.
+
+### Explained for a five-year-old
+
+It is the window on the front of the toy factory. You can see every box on the belt, what the robots are doing with it
+and what they want to ask you. When a robot says "okay?", you press the big blue button to say yes, or the plain button
+to say no and tell it why. The "Run one step" button is a little push that makes the belt move once.
+
+### Explained for a software engineer
+
+`factory/factory/web.py` is a stdlib `ThreadingHTTPServer` on `127.0.0.1` that serves three things: the single-page
+console (`factory/ui/index.html`, `app.css`, `app.js`: vanilla JS, no build step, no CDN except the IBM Plex Mono
+stylesheet from Google Fonts), a read-only JSON API and three writes. Deep links (`/reels/<id>`, `/review`, `/agents`,
+`/themes`, `/assets`) all return `index.html`; `/ui/*` serves only the static files in that folder.
+
+| Route | What |
+|---|---|
+| `GET /api/reels`, `/api/reels/<id>` | reel summaries; one reel's detail (file names only, never the transcript text or folder paths) |
+| `GET /api/review`, `/api/agents`, `/api/themes`, `/api/assets` | the daily review cut into sections; role cards plus live status; `themes.json`; `assets/MANIFEST.json` plus whether each file exists |
+| `POST /api/decide` | `{id, decision: approve or reject, comment}`; rejecting needs a comment; 409 if the reel is not `proposed` |
+| `POST /api/review-result` | `{id, result: approved or changes, comment}`; changes need a comment; 409 unless `in_review` |
+| `POST /api/tick` | one `tick`, returns the log lines |
+
+Safety, because approving starts real work on this machine: every request needs a `localhost` or `127.0.0.1` `Host`
+(against DNS rebinding); every POST also needs a local `Origin` when one is sent, `Content-Type: application/json`, a body
+under 64 KB, and the header `X-Factory-Token` equal to the per-process token that the server writes into
+`<meta name="factory-token">` when it serves `index.html` (403 otherwise; 400 for bad JSON or ids; 404 for unknown reels
+or routes). Reel ids must match `^[\w-]{1,200}$`, so there is no path traversal. Writes are serialised with a lock. The
+page puts every dynamic string in with `textContent`, so a reel name is never read as HTML, and a Content-Security-Policy
+header blocks inline scripts and styles. The code that records decisions is `decide()`, the same file the `approve` and
+`reject` commands write.
 
 ## What is automatic today, and what is not
 
