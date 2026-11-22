@@ -280,7 +280,8 @@ def build_scenes(job, base, pub, L, m):
         f = min(2.2, max(0.5, dur / s["seconds"]))
         pad = max(0.0, dur - s["seconds"] * f) + 0.8
         key = json.dumps([g["crop"], g.get("width"), s["t"], s["seconds"], round(dur, 3)])
-        dst = os.path.join(pub, f"scene_{s.get('screen', L['screen'])}_{hashlib.md5(key.encode()).hexdigest()[:8]}.mp4")
+        # md5 is only a cache-file name here, not a security use (same digest as before)
+        dst = os.path.join(pub, f"scene_{s.get('screen', L['screen'])}_{hashlib.md5(key.encode(), usedforsecurity=False).hexdigest()[:8]}.mp4")
         if not os.path.exists(dst):
             media.run(["-ss", str(s["t"]), "-t", str(s["seconds"]), "-i", P(base, g["src"]), "-an",
                        "-vf", f"crop={g['crop']},setpts={f:.4f}*PTS,fps=30,scale={g.get('width', 2016)}:-2:flags=lanczos,format=yuv420p,"
