@@ -88,6 +88,7 @@ Only `_house.json` and anonymized `_example.json` files are committed. When unsu
 
 ## Rendering
 
-Render concurrency is **1** on a 16 GB Mac (set `"concurrency": 1` in the job; higher values have crash-looped the
-browser). One render at a time: the factory holds a render lock. Scratch output goes to `engine/build/` (git-ignored,
-safe to delete).
+One render job at a time on a 16 GB Mac: never start a second reel while one renders (the factory holds a render lock).
+Inside one job the engines' own caps are the tested maximum (`run.py` 3, `pinequest.py` / `engineers.py` 2 via the job's
+`"concurrency"`); higher values have crash-looped the browser. Lower it to 1 if the Mac is busy. Scratch output goes to
+`engine/build/` (git-ignored, safe to delete).
