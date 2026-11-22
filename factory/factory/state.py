@@ -68,7 +68,10 @@ def save(cfg: Config, reel: dict) -> None:
 
 
 def load(cfg: Config, reel_id: str) -> dict[str, Any]:
-    path = cfg.reel_dir(reel_id) / "reel.json"
+    try:
+        path = cfg.reel_dir(reel_id) / "reel.json"
+    except ValueError:  # not a possible reel id (e.g. "../..")
+        raise UnknownReel(reel_id) from None
     if not path.is_file():
         raise UnknownReel(reel_id)
     return json.loads(path.read_text(encoding="utf-8"))

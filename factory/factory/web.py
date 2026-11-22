@@ -10,12 +10,17 @@ from __future__ import annotations
 
 import html
 import json
+import re
+import secrets
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 from . import approval, state
 from . import tick as tick_mod
 from .config import Config
+
+MAX_BODY = 64 * 1024  # a form with a comment is far smaller; anything bigger is refused unread
+LOCAL_HOSTS = {"localhost", "127.0.0.1", "[::1]"}  # Host header values we answer to (blocks DNS rebinding)
 
 LANES = [  # status -> (lane title, who acts)
     ("Arriving", ("new", "transcribing", "detecting")),
@@ -116,6 +121,8 @@ def decide(cfg: Config, reel_id: str, decision: str, comment: str) -> str:
     reel = state.load(cfg, reel_id)
     if reel["status"] != "proposed":
         return f"{reel['name']} is '{reel['status']}', so there is nothing to decide."
+    if decision not in ("approve", "reject"):
+        return "Unknown decision; nothing was changed."
     if decision == "approve":
         approval.approve(cfg, reel, comment, by="dashboard")
         return f"Approved: {reel['name']}. The next step picks it up."
@@ -136,7 +143,13 @@ def make_handler(cfg: Config, token: str):
             self.end_headers()
             self.wfile.write(data)
 
+        def _host_ok(self) -> bool:
+            name = re.sub(r":\d+$", "", (self.headers.get("Host") or "").strip().lower())
+            return name in LOCAL_HOSTS
+
         def do_GET(self) -> None:  # noqa: N802
+            if not self._host_ok():  # a rebound foreign name must not be able to read the page that holds the token
+                return self._send("Refused: unexpected Host header.", 403)
             u = urlparse(self.path)
             if u.path == "/":
                 self._send(page(cfg, token, parse_qs(u.query).get("m", [""])[0]))
@@ -148,9 +161,17 @@ def make_handler(cfg: Config, token: str):
                 self._send("Not found", 404)
 
         def do_POST(self) -> None:  # noqa: N802
-            n = int(self.headers.get("Content-Length") or 0)
-            form = {k: v[0] for k, v in parse_qs(self.rfile.read(n).decode("utf-8")).items()}
-            if form.get("token") != token:  # only this page's own forms may change state
+            if not self._host_ok():
+                return self._send("Refused: unexpected Host header.", 403)
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                n = -1
+            if not 0 <= n <= MAX_BODY:
+                self.close_connection = True
+                return self._send("Bad or oversized request body.", 400 if n < 0 else 413)
+            form = {k: v[0] for k, v in parse_qs(self.rfile.read(n).decode("utf-8", "replace")).items()}
+            if not secrets.compare_digest(form.get("token", "").encode(), token.encode()):  # only this page's own forms may change state
                 return self._send("Refused: this request did not come from the dashboard.", 403)
             try:
                 if self.path == "/decide":
@@ -172,7 +193,6 @@ def make_handler(cfg: Config, token: str):
 
 
 def serve(cfg: Config, port: int = 8765) -> None:
-    import secrets
     cfg.ensure_dirs()
     token = secrets.token_urlsafe(16)
     srv = ThreadingHTTPServer(("127.0.0.1", port), make_handler(cfg, token))

@@ -37,7 +37,10 @@ def entries(manifest):
 
 
 def path_of(entry):
-    return os.path.join(HERE, entry["file"])
+    dest = os.path.realpath(os.path.join(HERE, entry["file"]))
+    if os.path.commonpath([os.path.realpath(HERE), dest]) != os.path.realpath(HERE):  # a manifest entry must never write outside assets/
+        raise ValueError(f"manifest file path escapes assets/: {entry['file']!r}")
+    return dest
 
 
 def looks_like_audio(head, content_type):
@@ -62,9 +65,11 @@ def download(entry):
     dest = path_of(entry)
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     tmp = dest + ".part"
+    if not entry["source_url"].lower().startswith("https://"):  # no file:// or plain http
+        raise RuntimeError(f"source_url must be https: {entry['source_url']!r}")
     req = urllib.request.Request(entry["source_url"], headers={"User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT, context=ssl_context()) as resp:
+    try:  # urlopen below: scheme is forced to https above, so B310 (file:/ or custom schemes) cannot happen
+        with urllib.request.urlopen(req, timeout=TIMEOUT, context=ssl_context()) as resp:  # nosec B310
             ctype = resp.headers.get("Content-Type", "") or ""
             data = resp.read()
     except (urllib.error.URLError, OSError) as exc:

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,6 +12,7 @@ DEFAULT_WHISPER_MODEL = "~/.cache/whisper-cpp/ggml-large-v3-q5_0.bin"
 # The package lives at <repo>/factory/factory/, so the repo root is two levels up.
 DEFAULT_REPO = Path(__file__).resolve().parents[2]
 
+REEL_ID = re.compile(r"\w[\w-]*")  # what state.slugify produces
 CHOICES = {"transcriber": ("whisper", "manual"), "editor": ("handoff", "claude"), "approval": ("file", "planner")}
 
 
@@ -47,6 +49,9 @@ class Config:
         return self.home / "factory.lock"
 
     def reel_dir(self, reel_id: str) -> Path:
+        # A reel id is a folder name: no "..", no slash, no dot. Ids from the network or the command line must stay inside state/.
+        if not isinstance(reel_id, str) or not REEL_ID.fullmatch(reel_id):
+            raise ValueError(f"invalid reel id: {reel_id!r}")
         return self.state / reel_id
 
     def ensure_dirs(self) -> None:

@@ -32,6 +32,23 @@ jobs:
         working-directory: ${{ env.ENGINE }}
         run: python -m unittest discover -s tests -v
 
+  factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Factory unit and security tests (stdlib only)
+        working-directory: factory
+        run: python -m unittest discover -s tests -v
+      - name: Install ffmpeg (for the smoke clip)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: CLI end-to-end smoke (tick, status, approve, done, review in a throw-away FACTORY_HOME)
+        working-directory: factory
+        run: bash tests/e2e_smoke.sh
+
   manifests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -56,7 +73,8 @@ jobs:
       - name: Bandit (fails on medium severity and above)
         run: |
           pip install bandit
-          bandit -r "$ENGINE/pinequest.py" "$ENGINE/engineers.py" "$ENGINE/run.py" "$ENGINE/new_batch.py" "$ENGINE/reelpipe" -ll
+          bandit -r "$ENGINE/pinequest.py" "$ENGINE/engineers.py" "$ENGINE/run.py" "$ENGINE/new_batch.py" "$ENGINE/reelpipe" \
+            factory/factory assets/fetch_assets.py -ll
       - name: Secret scan (gitleaks, free for user-owned repos)
         uses: gitleaks/gitleaks-action@v2
         env:
