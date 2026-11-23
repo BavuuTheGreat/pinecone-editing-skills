@@ -1,0 +1,8 @@
+# Files are fetched by fetch_assets.py, not committed: keeps the repo small and the licences clear.
+music/*.mp3
+music/*.wav
+images/*
+!images/.gitkeep
+sfx/*
+!sfx/.gitkeep
+# Tracked on purpose: MANIFEST.json, README.md, fetch_assets.py, music/CREDITS.txt, the .gitkeep files.
