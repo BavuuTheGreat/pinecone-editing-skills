@@ -120,7 +120,10 @@ def answer_tails(job, pieces):
     job "answer_tail" sets the default (0 turns it off). Check the source: he must not start talking inside the tail."""
     dflt, cards = float(job.get("answer_tail", 1.0)), job.get("cards", {})
     out = [dict(p) for p in pieces]
+    hook_id = (job.get("hook") or {}).get("piece")
     for k, p in enumerate(out):
+        if p["answer"] == "hook" or p["id"] == hook_id:  # the hook is a teaser, not an answer: no tail
+            continue
         nxt = out[k + 1] if k + 1 < len(out) else None
         if "tail" not in p and nxt and not nxt.get("join") and nxt["answer"] != p["answer"] and cards.get(nxt["answer"]):
             p["tail"] = dflt
@@ -175,7 +178,7 @@ def plan(job, clips, pub):
         if not re.search(r"\w", text):  # the whole line was [hidden]: nothing to show
             continue
         pid = row[3] if len(row) > 3 else next(c["id"] for c in clips
-                                               if c["id"] != hook_id and c["start"] - 0.06 <= a < c["start"] + c["seconds"])
+                                               if c["id"] != hook_id and c["start"] - 0.06 <= a < c["end"])
         end_clip = starts[pid][0] + by_id[pid]["seconds"]
         nxt = clips[[c["id"] for c in clips].index(pid) + 1:][:1]
         hold = 0.0 if (nxt and nxt[0].get("join")) else 0.12  # a line never hangs over a jump cut

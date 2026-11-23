@@ -43,7 +43,7 @@ put it on the teacher's desk to be checked.
 
 ## Constraints found in the editing work so far
 
-- Mongolian speech recognition: the team tool (Speechmatics at dash.pinecone.mn) only runs in a signed-in browser; local
+- Mongolian speech recognition: the team's transcription tool (internal, Speechmatics) only runs in a signed-in browser; local
   whisper is weak on Mongolian. Transcription is therefore an adapter; the unattended one (whisper) marks its text as low trust.
 - Names are never trusted from speech. They come from the note file or stay a "needs you" item.
 - One render at a time, about 7 minutes per reel.

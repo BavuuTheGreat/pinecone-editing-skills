@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, pinequest-long-answer, factory-automation]
+    branches: [main, pinequest-long-answer, factory-automation, reorg-skills, factory-ui-v2]
   pull_request:
 
 permissions:

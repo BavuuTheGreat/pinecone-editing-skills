@@ -40,7 +40,8 @@ def resolve_pieces(student: dict) -> list[dict]:
             mono = media.pcm(student["source"], sr=16000, channels=1)
         s = media.quietest(mono, 16000, max(p["lo"], p["word_start"] - 0.45), p["word_start"] - 0.03)
         e = media.quietest(mono, 16000, p["word_end"] + 0.05, min(p["hi"], p["word_end"] + 0.5))
-        pieces.append({"id": p["id"], "answer": p["answer"], "start": s, "end": e})
+        rest = {k: v for k, v in p.items() if k not in ("word_start", "word_end", "lo", "hi")}  # keep tail / join / level
+        pieces.append({**rest, "start": s, "end": e})
     return pieces
 
 
@@ -52,8 +53,11 @@ def cut(student: dict, pieces: list[dict], public: str) -> list[dict]:
     for p in pieces:
         a = p["start"]
         d = math.floor((p["end"] - a) * FPS + 0.05) / FPS  # tolerance: ms-rounded EDL times must not lose a frame
-        tail = math.floor(float(p.get("tail", 0)) * FPS + 0.05) / FPS  # tail: picture keeps running after the speech, sound faded out
-        dst = os.path.join(public, f"{student['key']}_{p['id']}_{round(a * 1000)}_{round(p['end'] * 1000)}{'_L%d' % round(p['level'][0] * 1000) if p.get('level') else ''}{'_T%d' % round(tail * 1000) if tail else ''}.mp4")  # times in name: an edited piece never reuses a stale cut
+        tail = float(p.get("tail", 0))
+        if tail > 0:  # never ask for picture past the end of the source file
+            tail = min(tail, max(0.0, media.duration(student["source"]) - p["end"]))
+        tail = math.floor(tail * FPS + 0.05) / FPS  # tail: picture keeps running after the speech, sound faded out
+        dst = os.path.join(public, f"{student['key']}_{p['id']}_{round(a * 1000)}_{round(p['end'] * 1000)}{'_L%d-%d' % (round(p['level'][0] * 1000), round(p['level'][1] * 1000)) if p.get('level') else ''}{'_T%d' % round(tail * 1000) if tail else ''}.mp4")  # times in name: an edited piece never reuses a stale cut
         if not os.path.exists(dst):
             la, lb = p.get("level") or (a, a + d)  # level: measure the gain over the whole answer, so pieces of one
             g = round(PIECE_LUFS - media.lufs_file(student["source"], la, lb - la), 2)  # answer (pauses removed) keep their natural dynamics

@@ -1,6 +1,7 @@
 """One pass over every reel: each reel moves at most one step. Safe to run again and again."""
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 import time
@@ -41,6 +42,25 @@ def render_lock(cfg: Config) -> Iterator[bool]:
         yield True
     finally:
         cfg.lock.unlink(missing_ok=True)
+
+
+class TickBusy(RuntimeError):
+    """Another tick (CLI, loop or the web button) is running on this FACTORY_HOME."""
+
+
+@contextmanager
+def tick_lock(cfg: Config) -> Iterator[None]:
+    """Cross-process, non-blocking. flock goes away with the process, so a crash never leaves it stuck."""
+    cfg.home.mkdir(parents=True, exist_ok=True)
+    fd = os.open(cfg.tick_lock, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            raise TickBusy("a step is already running") from None
+        yield
+    finally:
+        os.close(fd)  # closing drops the lock
 
 
 class _Ctx:
@@ -88,9 +108,11 @@ def _proposed(reel: dict, c: _Ctx) -> None:
     if not reel["proposal"]["path"]:
         from factory import propose
         block, markdown = propose.build(reel, c.cfg)
-        path = c.cfg.reel_dir(reel["id"]) / "proposal.md"
+        folder = c.cfg.reel_dir(reel["id"])
+        (folder / "approval.json").unlink(missing_ok=True)  # a decision from before this proposal existed does not count
+        path = folder / "proposal.md"
         path.write_text(markdown, encoding="utf-8")
-        reel["proposal"] = {**block, "path": str(path)}
+        reel["proposal"] = {**block, "path": str(path), "at": state.now_iso()}
         reel["approval"] = {"state": "pending", "by": "", "at": "", "comment": ""}
         for q in block.get("open_questions", []):
             state.add_need(reel, q)
@@ -154,11 +176,20 @@ STEPS = {"new": _new, "transcribing": _transcribing, "detecting": _detecting, "p
 
 def tick(cfg: Config, probe: Callable | None = None, runner: Callable | None = None) -> list[str]:
     """Scan the inbox, then advance every reel one step. Returns one log line per change."""
+    with tick_lock(cfg):
+        return _tick(cfg, probe, runner)
+
+
+def _tick(cfg: Config, probe: Callable | None, runner: Callable | None) -> list[str]:
     cfg.ensure_dirs()
     ctx, log = _Ctx(cfg, probe, runner), []
     for r in inbox.scan(cfg):
         log.append(f"{r['id']}: found in inbox")
-    for reel in state.list_reels(cfg):
+    for snap in state.list_reels(cfg):
+        try:
+            reel = state.load(cfg, snap["id"])  # the snapshot may be minutes old after a long step
+        except state.UnknownReel:
+            continue
         before, status = json.dumps(reel, sort_keys=True), reel["status"]
         step = STEPS.get(status)
         if step:

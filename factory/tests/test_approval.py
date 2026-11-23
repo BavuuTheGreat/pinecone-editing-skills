@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -33,6 +34,32 @@ class ApprovalTest(unittest.TestCase):
     def test_garbage_file_is_no_decision(self) -> None:
         (self.cfg.reel_dir("r") / "approval.json").write_text("{bad")
         self.assertIsNone(self.adapter.read_decision(self.reel))
+
+    def test_decision_older_than_the_proposal_is_ignored(self) -> None:
+        approval.approve(self.cfg, self.reel, "early")
+        p = self.cfg.reel_dir("r") / "approval.json"
+        d = json.loads(p.read_text())
+        d["at"] = "2020-01-01T00:00:00+00:00"
+        p.write_text(json.dumps(d))
+        self.reel["proposal"]["at"] = "2026-11-20T10:00:00+08:00"
+        self.assertIsNone(self.adapter.read_decision(self.reel))
+        self.reel["proposal"]["at"] = "2019-01-01T00:00:00+00:00"
+        self.assertEqual(self.adapter.read_decision(self.reel)["state"], "approved")
+
+    def test_refusal_needs_proposed_pending_and_a_proposal(self) -> None:
+        r = state.new_record("R", "/in", "r2")
+        self.assertIn("nothing to decide", approval.refusal(r))
+        r.update(status="proposed")
+        self.assertIn("nothing to decide", approval.refusal(r))
+        r["approval"]["state"] = "pending"
+        self.assertIn("nothing to decide", approval.refusal(r))  # no proposal.md yet
+        r["proposal"]["path"] = "/x/p.md"
+        self.assertIsNone(approval.refusal(r))
+
+    def test_decide_leaves_no_fixed_tmp_file(self) -> None:
+        approval.approve(self.cfg, self.reel)
+        self.assertFalse((self.cfg.reel_dir("r") / "approval.json.tmp").exists())
+        self.assertEqual([p.name for p in self.cfg.reel_dir("r").glob("*.tmp")], [])
 
     def test_planner_stub(self) -> None:
         cfg = Config(home=self.cfg.home, approval="planner")

@@ -3,10 +3,27 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
+from datetime import datetime
 from typing import Any
 
 from factory import state
 from factory.config import Config
+
+
+def _older(at: object, since: object) -> bool:
+    try:
+        return datetime.fromisoformat(str(at)) < datetime.fromisoformat(str(since))
+    except ValueError:
+        return False  # no usable time on one side: nothing to compare
+
+
+def refusal(reel: dict) -> str | None:
+    """Why this reel cannot take a decision now, or None. Only a posted, pending proposal can be decided."""
+    if (reel["status"] == "proposed" and (reel.get("approval") or {}).get("state") == "pending"
+            and (reel.get("proposal") or {}).get("path")):
+        return None
+    return f"{reel['name']} is '{reel['status']}' with no proposal waiting, so there is nothing to decide."
 
 
 class FileApproval:
@@ -25,6 +42,8 @@ class FileApproval:
             return None
         if not isinstance(d, dict) or d.get("state") not in ("approved", "rejected"):
             return None
+        if _older(d.get("at"), (reel.get("proposal") or {}).get("at")):
+            return None  # a decision made before this proposal existed is not a decision on it
         return {"state": d["state"], "by": d.get("by", ""), "at": d.get("at", ""), "comment": d.get("comment", "")}
 
     def post_result(self, reel: dict) -> None:
@@ -60,9 +79,15 @@ def _decide(cfg: Config, reel: dict, decision: str, comment: str, by: str | None
     folder = cfg.reel_dir(reel["id"])
     folder.mkdir(parents=True, exist_ok=True)
     data = {"state": decision, "by": by or os.environ.get("USER", "manager"), "at": state.now_iso(), "comment": comment}
-    tmp = folder / "approval.json.tmp"
-    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    os.replace(tmp, folder / "approval.json")
+    fd, tmp = tempfile.mkstemp(dir=folder, prefix=".approval-", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+        os.replace(tmp, folder / "approval.json")
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
 
 
 def approve(cfg: Config, reel: dict, comment: str = "", by: str | None = None) -> None:
