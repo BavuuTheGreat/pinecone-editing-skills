@@ -280,7 +280,8 @@ def build_scenes(job, base, pub, L, m):
         f = min(2.2, max(0.5, dur / s["seconds"]))
         pad = max(0.0, dur - s["seconds"] * f) + 0.8
         key = json.dumps([g["crop"], g.get("width"), s["t"], s["seconds"], round(dur, 3)])
-        dst = os.path.join(pub, f"scene_{s.get('screen', L['screen'])}_{hashlib.md5(key.encode()).hexdigest()[:8]}.mp4")
+        # md5 is only a cache-file name here, not a security use (same digest as before)
+        dst = os.path.join(pub, f"scene_{s.get('screen', L['screen'])}_{hashlib.md5(key.encode(), usedforsecurity=False).hexdigest()[:8]}.mp4")
         if not os.path.exists(dst):
             media.run(["-ss", str(s["t"]), "-t", str(s["seconds"]), "-i", P(base, g["src"]), "-an",
                        "-vf", f"crop={g['crop']},setpts={f:.4f}*PTS,fps=30,scale={g.get('width', 2016)}:-2:flags=lanczos,format=yuv420p,"
@@ -337,7 +338,7 @@ def plan(job, base, pub, segs, total, end_card):
     if job.get("closer_ep"):
         props["closerEp"] = job["closer_ep"]
     if job.get("brand_moments"):
-        props["brands"] = [{"name": b["name"], "word": b.get("word", b["name"]), "color": b["color"], "logo": (f"{b['name']}_mark.png" if os.path.exists(os.path.join(pub, f"{b['name']}_mark.png")) else None), "from": m(b["at"][0]), "to": m(b["at"][1])} for b in job["brand_moments"]]
+        props["brands"] = [{"name": b["name"], "label": b.get("label"), "word": b.get("word", "" if b["name"] == "text" else b["name"]), "color": b["color"], "logo": (f"{b['name']}_mark.png" if os.path.exists(os.path.join(pub, f"{b['name']}_mark.png")) else None), "from": m(b["at"][0]), "to": m(b["at"][1]), **({"plain": True} if b.get("plain") else {})} for b in job["brand_moments"]]
     if job.get("closer"):
         # the closer is as long as it takes for the whole video to land on its target length (30 s max)
         props["closerFrames"] = max(132, min(210, round(job.get("target_seconds", 30.0) * FPS) - round(total * FPS)))

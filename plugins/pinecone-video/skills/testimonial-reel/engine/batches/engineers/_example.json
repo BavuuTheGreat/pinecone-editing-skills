@@ -186,7 +186,7 @@
   "stack_move_frames": 10,
   "curtain_frames": 12,
   "brand_moments": [{"name": "claude", "word": "Claude", "at": [41.21, 41.79], "color": "#FF8F5E"}, {"name": "higgsfield", "word": "Higgsfield", "at": [41.91, 42.59], "color": "#B8F229"}],
-  "_brand_moments": "source-second spans where a company is named: colour wash + logo above the head + tinted caption word. name: claude | higgsfield. Logos are third-party trademarks, so assets/claude_mark.png and assets/higgsfield_mark.png are git-ignored: put your own copies there (512 px PNG, transparent or app icon); without them only the wordmark shows",
+  "_brand_moments": "source-second spans where a company is named: colour wash + logo above the head + tinted caption word. name: claude | higgsfield | text (text = a serif callout with `label` and `color`, no logo, e.g. a key number; add `"plain": true` for just the words with no colour wash over the picture). Logos are third-party trademarks, so assets/claude_mark.png and assets/higgsfield_mark.png are git-ignored: put your own copies there (512 px PNG, transparent or app icon); without them only the wordmark shows",
   "name_tag": {
     "name": "<Name in Mongolian Cyrillic>",
     "role": "<Role in English>",
