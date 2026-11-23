@@ -78,3 +78,10 @@ Run the scanners locally: `pip install bandit && bandit -r factory/factory asset
 
 Open a private security advisory on GitHub for this repository, or contact the Pinecone Academy marketing team directly.
 Please do not post details, footage or credentials in a public issue.
+
+## Supply chain (CI)
+
+- Every GitHub Action in `.github/workflows/ci.yml` is pinned to a full commit SHA (tag in a comment), so a moved
+  tag cannot change what runs. `.github/dependabot.yml` proposes updates as pull requests.
+- CI tools are pinned (`bandit==1.9.4`). The workflow token is read-only (`permissions: contents: read`) and the
+  workflow uses `pull_request`, never `pull_request_target`, so code from a fork never runs with write access or secrets.
