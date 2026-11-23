@@ -9,7 +9,7 @@ https://annnimate.com) to make clips look more professional "but keep it simple"
 Each component is **GSAP + ScrollTrigger for a web page** (React, Vue and plain HTML versions, plus a `preview.mp4`). A video render needs
 every frame to be a pure function of time, so the video engine does not run the components; it re-implements their **motion** (durations,
 staggers, easing curves, layering, read from each component's source) as `time -> pixels` in Remotion:
-`../../testimonial-reel/engine/src/eng/anm.tsx`. Same look, deterministic, no GSAP at render time.
+`../../interview-reel/engine/src/eng/anm.tsx`. Same look, deterministic, no GSAP at render time.
 
 ## Ported and used in the series (episode 1)
 | Component | Port | Where it is used | Why |

@@ -1,7 +1,7 @@
 """Slice Whisper word timestamps to one clip and rebase them to 0 ms.
 
 Usage: python3 clip_captions.py transcript.json <start_s> <end_s> captions.json
-Output matches brand-motion's WordCaptions `words` prop.
+Output matches brand-templates's WordCaptions `words` prop.
 """
 import json
 import sys

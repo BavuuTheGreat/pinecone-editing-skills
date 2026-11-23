@@ -64,5 +64,5 @@ The factory planner reads it when it chooses music. A track with `"tags": ["defa
 Every track here is Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/). A video that uses
 one must show the credit line from `music/CREDITS.txt` (also the `credit` field in `MANIFEST.json`) where it is posted.
 
-The engine keeps its own copy of Funkorama in `plugins/pinecone-video/skills/testimonial-reel/engine/assets/music/`.
+The engine keeps its own copy of Funkorama in `plugins/pinecone-video/skills/interview-reel/engine/assets/music/`.
 That copy is the one the testimonial engine reads today.

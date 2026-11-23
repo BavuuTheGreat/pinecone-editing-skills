@@ -11,7 +11,7 @@ from an inbox folder to review. It is not a hosted service and has no server of 
 | `factory/factory/web.py` (`python3 -m factory serve`) | A board in the browser with approve / reject buttons | The editing Mac, `127.0.0.1` only |
 | `factory/agents/*.md` | Role descriptions (prompts) for helper agents. Text only, no code, no secrets | Read by Claude Code |
 | `assets/fetch_assets.py` | Downloads the openly licensed music and images listed in `assets/MANIFEST.json` | The editing Mac |
-| Engine (`plugins/.../testimonial-reel/engine`) | Renders reels with ffmpeg and Remotion | The editing Mac |
+| Engine (`plugins/.../interview-reel/engine`) | Renders reels with ffmpeg and Remotion | The editing Mac |
 
 ## Threat model: the local dashboard and the factory
 

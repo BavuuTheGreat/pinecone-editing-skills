@@ -11,7 +11,7 @@ Rules it follows: `docs/tdd/content-factory-editing-tdd.md` (Editing Rulebook).
 ## Setup
 
 ```bash
-cd plugins/pinecone-video/skills/testimonial-reel/engine
+cd plugins/pinecone-video/skills/interview-reel/engine
 npm ci            # Remotion 4.0.536, pinned
 # needs: node 18+, python 3.11+ with numpy, ffmpeg/ffprobe on PATH
 ```

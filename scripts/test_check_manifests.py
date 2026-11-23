@@ -27,6 +27,7 @@ class Tree(unittest.TestCase):
             {"name": "m", "plugins": [{"name": "p", "source": "./plugins/p", "version": "1.0.0", "description": desc}]}))
         write(f"{self.r}/plugins/p/.claude-plugin/plugin.json", json.dumps({"name": "p", "version": "1.0.0", "description": desc}))
         write(f"{self.r}/README.md", "uses alpha and beta\n")
+        write(f"{self.r}/docs/SKILLS.md", "alpha and beta\n")
         for s in ("alpha", "beta"):
             self.skill(s)
 
@@ -68,6 +69,37 @@ class Tree(unittest.TestCase):
         d = "alpha, beta, ghost-skill"
         write(f"{self.r}/plugins/p/.claude-plugin/plugin.json", json.dumps({"name": "p", "version": "1.0.0", "description": d}))
         self.assertTrue(any("ghost-skill" in e for e in cm.check(self.r)))
+
+
+    def test_skill_not_in_skills_doc(self):
+        write(f"{self.r}/docs/SKILLS.md", "only alpha\n")
+        self.assertTrue(any("beta: not mentioned in docs/SKILLS.md" in e for e in cm.check(self.r)))
+
+    def test_skills_doc_missing(self):
+        os.remove(f"{self.r}/docs/SKILLS.md")
+        self.assertTrue(any("docs/SKILLS.md: missing" in e for e in cm.check(self.r)))
+
+    def test_stale_name_in_manifest(self):
+        d = "alpha, beta, brand-motion"
+        write(f"{self.r}/plugins/p/.claude-plugin/plugin.json", json.dumps({"name": "p", "version": "1.0.0", "description": d}))
+        self.assertTrue(any("old skill name 'brand-motion'" in e for e in cm.check(self.r)))
+
+    def test_stale_name_in_skill_frontmatter(self):
+        self.skill("alpha", desc="uses testimonial-reel")
+        self.assertTrue(any("old skill name 'testimonial-reel'" in e for e in cm.check(self.r)))
+
+    def test_stale_name_in_ci(self):
+        write(f"{self.r}/.github/workflows/ci.yml", "ENGINE: plugins/x/skills/testimonial-reel/engine\n")
+        self.assertTrue(any("ci.yml" in e and "testimonial-reel" in e for e in cm.check(self.r)))
+
+    def test_required_skill_missing_for_pinecone_video(self):
+        d = "alpha, beta"
+        write(f"{self.r}/.claude-plugin/marketplace.json", json.dumps(
+            {"name": "m", "plugins": [{"name": "pinecone-video", "source": "./plugins/p", "version": "1.0.0", "description": d}]}))
+        write(f"{self.r}/plugins/p/.claude-plugin/plugin.json", json.dumps({"name": "pinecone-video", "version": "1.0.0", "description": d}))
+        errs = cm.check(self.r)
+        self.assertTrue(any("required skill 'loop-engineer'" in e for e in errs))
+        self.assertTrue(any("required skill 'ecc-triage'" in e for e in errs))
 
 
 class RealRepo(unittest.TestCase):

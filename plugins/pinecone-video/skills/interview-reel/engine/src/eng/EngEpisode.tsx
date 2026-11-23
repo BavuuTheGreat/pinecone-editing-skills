@@ -30,7 +30,7 @@ export type EngEpisodeProps = {
   chapters: Chapter[];
   mark?: string;
   captionFace?: "source" | "cormorant" | "tinos"; // serif of the plate caption (default source: slim Source Serif 4)
-  captionStyle?: "plate" | "gip"; // plate (default): white serif on a black plate like the reference reel; gip: the testimonial-reel caption
+  captionStyle?: "plate" | "gip"; // plate (default): white serif on a black plate like the reference reel; gip: the interview-reel caption
   captionFont?: string; // brand-pack GIP woff2 in public/ (testimonial caption face); Manrope when absent
   captionY?: number; // chip bottom edge, default 1620
   leaks?: { t: number; dir: number; tone?: "pink" | "green" }[]; // light-leak flash (the testimonial reels' colourful smooth transition) at these presenter-times
@@ -259,7 +259,7 @@ const Window: React.FC<{ s: Stack; pf: number; startF: number }> = ({ s, pf, sta
 };
 
 // Captions (review 2026-11-17: "a font change and a black background, like the reference video"): white Times-like serif (Tinos) on a tight
-// square-cornered black plate, 2-4 words, hard cut on and off, lower third. `captionStyle: "gip"` brings back the plain testimonial-reel
+// square-cornered black plate, 2-4 words, hard cut on and off, lower third. `captionStyle: "gip"` brings back the plain interview-reel
 // caption (GIP, white, no box, soft shadow; needs the brand-pack font).
 const CaptionText: React.FC<{ P: EngEpisodeProps; pf: number }> = ({ P, pf }) => {
   const t = pf / FPS;

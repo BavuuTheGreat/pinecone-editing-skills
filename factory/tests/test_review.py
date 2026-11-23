@@ -95,7 +95,7 @@ class ReviewTests(unittest.TestCase):
             "plugins/pinecone-video/skills/edit-reel/references/themes/x.md",
             "",
             "def5678\tTune engine",
-            "plugins/pinecone-video/skills/testimonial-reel/engine/a.py",
+            "plugins/pinecone-video/skills/interview-reel/engine/a.py",
             "factory/factory/detect.py",
             "",
             "0a0a0a0\tTouch skill and asset",

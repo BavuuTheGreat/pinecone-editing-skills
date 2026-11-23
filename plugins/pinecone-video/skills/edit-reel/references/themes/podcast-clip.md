@@ -2,7 +2,7 @@
 
 A 30-60 s moment cut from a Pinecone podcast episode. Pick it for long-form talk with headphones and mics.
 
-**Status:** Ready · **Made by:** `podcast-clipper` + `brand-motion` · **Audit:** 30 reels, median 10.1K organic, 0.90% (Oct), source clips 65-165 s, 3 cuts/min
+**Status:** Ready · **Made by:** `podcast-clipper` + `brand-templates` · **Audit:** 30 reels, median 10.1K organic, 0.90% (Oct), source clips 65-165 s, 3 cuts/min
 **Examples:** instagram.com/reel/DbqFv2Fzd1L (title bar), /reel/DdIvbNqjtfz, /reel/DdGbVDQDQHP
 
 ## Signals

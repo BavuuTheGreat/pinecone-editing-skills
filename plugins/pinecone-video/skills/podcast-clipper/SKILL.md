@@ -1,6 +1,6 @@
 ---
 name: podcast-clipper
-description: Turn a long podcast episode (16:9, Mongolian or English) into vertical 9:16 reels - word-level transcript, pick the strongest 30-60 s moments, cut and reframe to the speaker, and output word-by-word captions for the brand-motion WordCaptions template. Use when asked to "clip the podcast", "make reels from this episode", or "cut shorts from a YouTube interview".
+description: Turn a long podcast episode (16:9, Mongolian or English) into vertical 9:16 reels - word-level transcript, pick the strongest 30-60 s moments, cut and reframe to the speaker, and output word-by-word captions for the brand-templates WordCaptions template. Use when asked to "clip the podcast", "make reels from this episode", or "cut shorts from a YouTube interview".
 argument-hint: "<episode file or URL> [number of clips]"
 allowed-tools: Bash, Read, Write, AskUserQuestion
 ---
@@ -34,10 +34,10 @@ cheaper to produce and tighter. Default target: **30-60 s, hook in the first 3 s
    If both speakers alternate quickly, use Higgsfield `reframe` (it tracks the speaker) instead.
 5. **Captions.**
    `python3 "${CLAUDE_SKILL_DIR}/scripts/clip_captions.py" transcript.json <start> <end> captions01.json`
-   Copy `clip01.mp4` into the brand-motion project's `public/`, add `"videoSrc"` pointing to it,
+   Copy `clip01.mp4` into the brand-templates project's `public/`, add `"videoSrc"` pointing to it,
    and render `WordCaptions` with `--props=captions01.json`.
 6. **Title + end card.** Put the hook line as an on-screen title for the first 3 s, and add
-   the brand-motion `EndCard` with the full-episode CTA.
+   the brand-templates `EndCard` with the full-episode CTA.
 
 ## Output checklist per clip
 

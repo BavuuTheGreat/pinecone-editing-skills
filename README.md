@@ -8,8 +8,7 @@ Nobody has to open an editor.
 The styles are not guesses. Each theme was measured from Pinecone's own published reels and then
 tuned in review rounds with the Marketing reviewer, so the output looks like what the account posts.
 
-> Private repo. Your GitHub account needs access, and `git` on your computer must be signed in to
-> GitHub (`gh auth login`) before Claude Code can install from it.
+> Public repo. The brand pack (font, logo, end cards) is not in it: Pinecone members get it from the Editing manager (step 4).
 
 ## Install (once per computer, ~10 min)
 
@@ -19,7 +18,7 @@ tuned in review rounds with the Marketing reviewer, so the output looks like wha
    /plugin marketplace add BavuuTheGreat/pinecone-editing-skills
    /plugin install pinecone-video@pinecone-editing-skills
    ```
-3. Say: `set up the editing station`. Claude runs `testimonial-reel/scripts/setup.py`, which checks
+3. Say: `set up the editing station`. Claude runs `interview-reel/scripts/setup.py` (the skill formerly called `testimonial-reel`), which checks
    python, numpy, node and ffmpeg, prints the install command for anything missing on your OS (Mac,
    Windows, Linux) and installs the pinned render engine. Wait for **Ready**.
 4. **Brand pack** (Pinecone members only). The caption font (GIP, licensed), the Pinecone logo and the end
@@ -57,13 +56,15 @@ The editing factory can notice your footage folder, propose a reel and wait for 
 
 | Theme | Status | Made by |
 |---|---|---|
-| Testimonial / seated interview | Ready (review-approved) | `testimonial-reel` |
-| PineQuest impression (participant / judge) | Ready (review-approved) | `testimonial-reel/engine/pinequest.py` |
-| Engineers matter more with AI (series) | Beta (episode 1 in review) | `engineers-series` (`testimonial-reel/engine/engineers.py`) |
+| Testimonial / seated interview | Ready (review-approved) | `interview-reel` |
+| PineQuest impression (participant / judge) | Ready (review-approved) | `interview-reel/engine/pinequest.py` |
+| Engineers matter more with AI (series) | Beta (episode 1 in review) | `engineers-series` (`interview-reel/engine/engineers.py`) |
 | Podcast clip | Ready | `podcast-clipper` |
 | Motion teaser | Ready | `motion-studio` |
-| Event recap, presenter promo, creator collab, office trend | Beta (first reels go through review) | `edit-reel/scripts/assemble.py` + `brand-motion` |
-| Cinematic brand film | Plan only (shot list) | `ai-video-playbook` + `motion-studio` |
+| Event recap, presenter promo, creator collab, office trend | Beta (first reels go through review) | `edit-reel/scripts/assemble.py` + `brand-templates` |
+| Cinematic brand film | Plan only (shot list) | `reel-planner` + `motion-studio` |
+
+Which skill does what, for engineers and for five-year-olds: [docs/SKILLS.md](docs/SKILLS.md).
 
 Each theme's card (structure, pace, captions, music, checklist, review lessons) is in
 `plugins/pinecone-video/skills/edit-reel/references/themes/`.
@@ -77,13 +78,29 @@ Step-by-step guide, file map and what is not in the repo: [docs/engineers-series
 | Skill | What it does |
 |---|---|
 | `edit-reel` | Editing station entry point: picks the theme from the footage, asks for missing facts, hands off to the right skill, checks and delivers |
-| `testimonial-reel` | Interviews → reels: answer picking, name title, typed question cards with key sounds, hard cuts, corrected captions, music, end card, reviewer fix rounds. Also hosts the PineQuest engine |
+| `interview-reel` | Interviews → reels: answer picking, name title, typed question cards with key sounds, hard cuts, corrected captions, music, end card, reviewer fix rounds. Also hosts the PineQuest engine |
 | `reel-audit` | Downloads an account's reels, contact sheets, pacing metrics, format classification, AI feasibility |
-| `ai-video-playbook` | Format → shot list → film / generate / template per shot → prompts → guardrails |
-| `brand-motion` | Remotion brand templates: counter, list card, kinetic title, word captions, end card |
+| `reel-planner` | Format → shot list → film / generate / template per shot → prompts → guardrails |
+| `brand-templates` | Remotion brand templates: counter, list card, kinetic title, word captions, end card |
 | `podcast-clipper` | Word-level transcript → 30-60 s moments → 9:16 cuts → captions |
-| `engineers-series` | Episodes of "Engineers matter more with AI": presenter + screen inserts, Ghost Text intro, light-leak transition, GIP captions from the reel generator, swing-jazz bed, Annnimate-style curtain/scramble/split-flap motion. Engine lives in `testimonial-reel/engine` |
+| `engineers-series` | Episodes of "Engineers matter more with AI": presenter + screen inserts, Ghost Text intro, light-leak transition, GIP captions from the reel generator, swing-jazz bed, Annnimate-style curtain/scramble/split-flap motion. Engine lives in `interview-reel/engine` |
 | `motion-studio` | Code-rendered motion films with beat-synced cuts, code-made music and a self-review loop |
+| `loop-engineer` | The loop for any main goal: units, acceptance checks with real evidence, fix until all pass |
+| `ecc-triage` | Reads the ECC Tools bot comments on a PR, fixes the useful ones, ignores the noise |
+
+Each skill is explained for an engineer and for a five-year-old in [docs/SKILLS.md](docs/SKILLS.md).
+
+### Renamed skills (0.6.0)
+
+For people with muscle memory. The old names are gone; say the new one.
+
+| Old name | New name | Why |
+|---|---|---|
+| `testimonial-reel` | `interview-reel` | it also hosts the PineQuest and Engineers engines |
+| `ai-video-playbook` | `reel-planner` | says what it does: plan a reel |
+| `brand-motion` | `brand-templates` | fixed brand graphics; `motion-studio` stays the bespoke films |
+
+After updating, reinstall the plugin (`/plugin marketplace update pinecone-editing-skills`, then `/plugin install pinecone-video@pinecone-editing-skills`).
 
 ### Installed from upstream by `install.sh`
 
@@ -115,9 +132,12 @@ Real jobs (student names, transcripts, captions, audio) stay on the editing comp
 plugins/pinecone-video/
   .claude-plugin/plugin.json
   skills/edit-reel/                        # router, theme cards, house style, general assembler
-  skills/testimonial-reel/                 # SKILL.md, references/, scripts/setup.py
+  skills/interview-reel/                   # SKILL.md, references/, scripts/setup.py
     engine/                                # run.py, new_batch.py, pinequest.py, reelpipe/, src/ (Remotion), assets/
-  skills/reel-audit/  ai-video-playbook/  brand-motion/  podcast-clipper/  motion-studio/  engineers-series/
+  skills/reel-audit/  reel-planner/  brand-templates/  podcast-clipper/  motion-studio/  engineers-series/
+  skills/loop-engineer/  ecc-triage/       # process skills: main-goal loop, PR bot triage
+CLAUDE.md                                  # rules for any agent working in this repo
+docs/SKILLS.md                             # every skill for an engineer and a five-year-old
 docs/content-factory/editing-unit.md       # member guide (Mongolian)
 docs/tdd/                                  # Editing rulebook and checklist
 audits/2026-10-pineconemongolia/           # first reel audit
@@ -126,9 +146,9 @@ install.sh
 
 ## Contributing
 
-- A review lesson goes into the theme card (or `testimonial-reel/references/`), not into one job.
+- A review lesson goes into the theme card (or `interview-reel/references/`), not into one job.
 - Per-video fixes go in the job / manifest, never in `engine/src` or `engine/assets`.
-- TS/TSX files stay at or under 160 lines, no `any`, no `eslint-disable`. Type-check: `cd plugins/pinecone-video/skills/testimonial-reel/engine && npm ci && npx tsc --noEmit`.
+- TS/TSX files stay at or under 160 lines, no `any`, no `eslint-disable`. Type-check: `cd plugins/pinecone-video/skills/interview-reel/engine && npm ci && npx tsc --noEmit`.
 - New skill or theme: add a row above and bump `version` in both manifests.
 
 ## Credits

@@ -8,7 +8,7 @@ I build the video from the plan.
 
 - Inputs: `EDIT_REQUEST.md` (files, note, theme card path, transcript, rules).
 - Outputs: the finished video files, recorded with `python3 -m factory done <id> <files...>`.
-- Uses the `pinecone-video:edit-reel` skill and the engines under `plugins/pinecone-video/skills/testimonial-reel/engine`. Runs under the render lock, one render at a time (about 7 minutes per reel).
+- Uses the `pinecone-video:edit-reel` skill and the engines under `plugins/pinecone-video/skills/interview-reel/engine`. Runs under the render lock, one render at a time (about 7 minutes per reel).
 - Module: `factory/factory/edit.py` (adapter `handoff`, or `claude` when switched on).
 
 ## I must

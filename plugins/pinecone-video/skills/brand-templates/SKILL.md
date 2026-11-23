@@ -1,11 +1,11 @@
 ---
-name: brand-motion
-description: Render Pinecone-branded motion graphics with Remotion - milestone counters ("N/10K"), numbered list cards, kinetic event titles, word-by-word captions with the green highlight, and programme end cards. Use when a reel needs titles, captions, counters, list overlays, teasers or end cards, or when asked to "animate", "make a motion graphic", "add captions" or "make an end card".
+name: brand-templates
+description: The fixed Pinecone graphics kit (for one-off bespoke films use motion-studio). Render Pinecone-branded motion graphics with Remotion - milestone counters ("N/10K"), numbered list cards, kinetic event titles, word-by-word captions with the green highlight, and programme end cards. Use when a reel needs titles, captions, counters, list overlays, teasers or end cards, or when asked to "animate", "make a motion graphic", "add captions" or "make an end card".
 argument-hint: "<which template + the text/data>"
 allowed-tools: Bash, Read, Write, Edit
 ---
 
-# brand-motion - Pinecone motion templates (Remotion)
+# brand-templates - fixed Pinecone graphics (Remotion; renamed from brand-motion)
 
 The `template/` folder is a ready Remotion 4 project with 5 compositions, rebuilt
 from graphics that repeat across our reels:

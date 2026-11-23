@@ -2,7 +2,7 @@
 
 A short code-rendered teaser with no camera footage: event dates, launches, countdowns.
 
-**Status:** Ready · **Made by:** `motion-studio` (bespoke) or `brand-motion` `KineticTitle` (quick) · **Audit:** 6 reels, median 9.1K organic, 0.52%, ~10 s, long animated shots
+**Status:** Ready · **Made by:** `motion-studio` (bespoke) or `brand-templates` `KineticTitle` (quick) · **Audit:** 6 reels, median 9.1K organic, 0.52%, ~10 s, long animated shots
 **Examples:** instagram.com/reel/Dcgf9h7DeU9, /reel/Db5IVR2k8xI
 
 ## Signals
@@ -22,5 +22,5 @@ A short code-rendered teaser with no camera footage: event dates, launches, coun
 | End | Pinecone end card optional when the teaser ends on its own CTA |
 
 ## Recipe
-Quick: `brand-motion` `KineticTitle` + end card through `assemble.py` with `"music_lead": true`.
+Quick: `brand-templates` `KineticTitle` + end card through `assemble.py` with `"music_lead": true`.
 Bespoke: hand off to `motion-studio` (it runs its own intake and review gates).

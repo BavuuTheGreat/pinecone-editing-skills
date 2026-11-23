@@ -13,7 +13,7 @@ edl.json:
   "music": "default" | null | "path.mp3",
   "speech_over_bed_db": 16.5,              # talk themes; ignored when "music_lead": true
   "music_lead": false,                     # true: no speech, music is the soundtrack (trend, teaser, recap)
-  "captioned": "build/03/captioned.mp4"    # optional: brand-motion WordCaptions render of cut.mp4
+  "captioned": "build/03/captioned.mp4"    # optional: brand-templates WordCaptions render of cut.mp4
 }
 """
 import json
@@ -26,7 +26,7 @@ import numpy as np
 
 SR, W, H, FPS = 48000, 1080, 1920, 30
 HERE = os.path.dirname(os.path.abspath(__file__))
-TR_ASSETS = os.path.normpath(os.path.join(HERE, "..", "..", "testimonial-reel", "engine", "assets"))
+TR_ASSETS = os.path.normpath(os.path.join(HERE, "..", "..", "interview-reel", "engine", "assets"))
 DEFAULTS = {"end_card": os.path.join(TR_ASSETS, "end_card_9x16.mp4"),
             "music": os.path.join(TR_ASSETS, "music", "Funkorama.mp3")}
 

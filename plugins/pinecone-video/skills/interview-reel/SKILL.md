@@ -1,11 +1,11 @@
 ---
-name: testimonial-reel
-description: Edit Pinecone student testimonial interviews into finished 9:16 reels - one video per student with the bold name title, typed question cards with keyboard sounds, hard cuts, corrected Mongolian captions, Funkorama music bed and the Pinecone end card. Use when asked to "make testimonial reels", "edit the student interviews", "edit these suragch videos", "apply the reviewer comments", or given a folder of raw seated interviews. Handles setup, transcription, answer picking, captions, rendering and review fixes.
+name: interview-reel
+description: The interview engine. Edit Pinecone student testimonial interviews into finished 9:16 reels (also hosts the PineQuest and Engineers-series engines) - one video per student with the bold name title, typed question cards with keyboard sounds, hard cuts, corrected Mongolian captions, Funkorama music bed and the Pinecone end card. Use when asked to "make testimonial reels", "edit the student interviews", "edit these suragch videos", "apply the reviewer comments", or given a folder of raw seated interviews. Handles setup, transcription, answer picking, captions, rendering and review fixes.
 argument-hint: "<folder of raw interviews> | fix <video> <reviewer comments>"
 allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 ---
 
-# testimonial-reel — Pinecone testimonial editor
+# interview-reel — interview and testimonial editor (renamed from testimonial-reel)
 
 Raw interview in, two videos per student out:
 

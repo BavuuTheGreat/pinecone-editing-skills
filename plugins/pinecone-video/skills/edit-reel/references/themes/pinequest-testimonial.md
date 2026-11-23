@@ -3,7 +3,7 @@
 One person (PineQuest participant or judge) standing at the event with a handheld mic, answering 3-5
 questions. Pick it for any "PineQuest S<n> | … сэтгэгдэл" reel.
 
-**Status:** Ready (2 reels approved in review, 2026-11-15: a III-place participant and a winner) · **Made by:** `testimonial-reel/engine/pinequest.py`
+**Status:** Ready (2 reels approved in review, 2026-11-15: a III-place participant and a winner) · **Made by:** `interview-reel/engine/pinequest.py`
 **Audit:** 7 PineQuest S5 reels (3 participant, 4 judge), 41-102 s. Organic: participant reels 1.6-8K views, judge #3 17.2K.
 Judge #1 (52.1K) and the top testimonial (159K) were boosted: likes 78 and 197.
 **Examples:** instagram.com/reel/DfqgqzBE85z (Hologemma), /reel/DfocUIbGLco (Kuma), /reel/DfmXpIijZkS (Naadamy), /reel/Dfg2YWhAtbO (judge #4)
@@ -50,7 +50,7 @@ Instagram (for project shots), judge title and company (judge reels).
    loudnorm -16, 1.5 s silence between). Where the two Speechmatics passes agree, that wins over whisper (whisper
    was wrong on "шөнийн 12" vs "1" the other way round too: when they disagree, ask the reviewer). Whisper large-v3
    hallucinates on these files; use it only for single words. Faint segments (-35 to -45 dB) are the interviewer's questions: use them to map answers. A faint word at the very start (one interview's "Хоёрдугаарт", -32 dB) is the question's tail, not the answer: check levels before quoting it.
-3. **Pick answers** (`testimonial-reel/references/answer-selection.md`): clean second takes, every piece ends
+3. **Pick answers** (`interview-reel/references/answer-selection.md`): clean second takes, every piece ends
    on a finished sentence, in the speaker's own order. Never reorder clauses or cut inside a sentence
    (reviewer: "cuts his talk in the middle"). Each piece ends ≥ 0.15 s after the last word (the whip-out runs 5 frames).
    Never drop a question because it is hard to transcribe (reviewer: "cut out one whole question"). Instead:
@@ -58,7 +58,7 @@ Instagram (for project shots), judge title and company (judge reels).
    шилжүүлээд C# болгох" where Speechmatics heard "юуны дээр … шил шар"), and read tech words into the mishears.
    Cards = the interviewer's own question: transcribe the faint question segments boosted (loudnorm -16) and
    phrase the card from it ("Төсөл хийхэд хамгийн хэцүү байсан зүйл юу вэ?").
-4. **Write `job.json`** from `testimonial-reel/engine/batches/pinequest/_example.json` and follow
+4. **Write `job.json`** from `interview-reel/engine/batches/pinequest/_example.json` and follow
    the comments in that file. Keep each real job in its own folder outside the repo
    (e.g. `~/Desktop/AI-videos/pinequest-jobs/<yyyy-mm>-<name>/job.json` with `media/`); real jobs are git-ignored.
 5. **Align captions.** Write the `captions` rows with the corrected text (times can be rough, they only have to put each
@@ -76,7 +76,7 @@ Instagram (for project shots), judge title and company (judge reels).
    `--check-captions` lists caption start vs nearest speech onset; |offset| > 0.15 s is flagged.
 6. `python3 -I pinequest.py <job>.json --plan`: read the timeline. Then render: `python3 -I pinequest.py <job>.json`.
 7. **Check**: stills of the hook (frames 0, 15, 30, 60), every caption band, each insert, the glitch into the end card.
-   Captions follow `testimonial-reel/references/captions.md`; list unsure words for the member.
+   Captions follow `interview-reel/references/captions.md`; list unsure words for the member.
 
 ## Long-answer reels (added 2026-11-19; a II байр team member, 90 s)
 

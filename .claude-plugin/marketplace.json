@@ -10,8 +10,8 @@
     {
       "name": "pinecone-video",
       "source": "./plugins/pinecone-video",
-      "description": "edit-reel (Editing station: pick a reel theme, get it edited in Pinecone's house style), testimonial-reel, reel-audit, ai-video-playbook, brand-motion, podcast-clipper, motion-studio and engineers-series skills tuned to Pinecone reel formats.",
-      "version": "0.5.1",
+      "description": "edit-reel (Editing station: pick a reel theme, get it edited in Pinecone's house style), interview-reel (testimonial, PineQuest and Engineers engines), engineers-series, podcast-clipper, motion-studio (bespoke films), brand-templates (fixed brand graphics), reel-planner, reel-audit, loop-engineer (the loop for any main goal) and ecc-triage (PR bot triage) skills tuned to Pinecone reel formats.",
+      "version": "0.6.0",
       "category": "productivity",
       "keywords": [
         "video",

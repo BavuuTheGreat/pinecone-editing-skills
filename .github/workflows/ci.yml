@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  ENGINE: plugins/pinecone-video/skills/testimonial-reel/engine
+  ENGINE: plugins/pinecone-video/skills/interview-reel/engine
 
 jobs:
   engine:
